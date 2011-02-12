@@ -1,3 +1,19 @@
-BusPirate v3: build a serial-only
+Projects (!!! - more important):
+
+!!!BusPirate v3: build a serial-only
+    - Need to get PCB Fabbed
+
+USB-UART:  Design using sample-able chips
+    - Find chips to base design on
+USB-RS232: Design using sample-able chips or no chips
+    - Research existing designs
+RS232 PIC Programmer:
+    - Find Reference Designs
+USB PIC Programmer: http://usbpicprog.org/
+    - Convert design to Eagle
+
+
+
+Ideas:
 
 use Open Documentation templates (https://github.com/NBitWonder/ProjectTemplates)
