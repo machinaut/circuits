@@ -1,0 +1,80 @@
+SparkFun Electronics Eagle Rules
+Last updated: November 11th, 2008
+
+
+File Naming:
+1) Directory names will be: 'Thingy' (no version number or product variation like 'Thingy with chip antenna')
+2) File names are: Thingy-v10.brd
+3) Panel names are: Thingy-Panel-v10.brd
+4) Minor versions will be Thingy-v11, v12, v13. Major will be v20, v30.
+5) Prototypes start in the sandbox and migrate to the store front specific category once listed on store front.
+
+
+PCB Layout:
+6) Create board frame on 0.05” grid. Make the lower left corner start at 0,0.
+7) Change line width of the board frame to 0.008”.
+8) Board frame will be square.
+9) Change top silkscreen color (tPlace) to gray. Bottom silk (bPlace) to yellow. And tDocu to dark yellow.
+10) Every board should have the full sparkfun logo or have the smaller SFE flame. Add the part : LOGO-SFE to your schematic. Put the box in the lower right corner area of the schematic frame.
+11) Stick parts on 0.05” grid. You may not break this rule unless you have a very good reason.
+12) Label any LED with it's purpose (power, status, D4, Lock, etc).
+13) Label any connector: Vin, Port1, Batt, 5-9V, etc.
+14) Label pins where applicable: TX, Power, +, Charge, etc.
+15) Label switches and switch states: On, USB, etc.
+16) When applicable, when adding labels, move vias and avoid having vias go through the silkscreen. Gold phoenix will bump labels around and make the board look bad if a via goes through the silk.
+17) Use a tDocu line to get pin labels on a straight line.
+18) Components will be grouped together (the resistors surrounding a transistor in the schematic will also be together on the PCB).
+19) Using the autorouter is approved for prototypes.
+20) Hand routing and touchup of the autorouter is expected for production boards.
+21) 0.020” vias are allowed. 15mil is minimum.
+22) Use 10mil traces on designs where possible. 8mil is acceptable. 7mil is minimum.
+23) Use thicker traces for power lines where applicable. 12mil=100mA max, 16mil=500mA, and so on.
+24) Spacing is 8mil between traces and space.
+25) Use straight lines with 45degree corners. Avoid 90degree corners.
+26) Use a ground pour on top/bottom layers where applicable.
+27) Use a 12mil isolation setting on any ground pour. This will help prevent pours from shorting to traces.
+28) Load the SparkFun.dru file containing
+● 12mil Pad restrings
+● 10mil Via restrings (vias tented)
+● 10mil Copper/Dimension size
+● 8mil trace/space
+
+
+Schematic Layout:
+29) All parts will be on 0.1” grid.
+30) All GND connections will use GND symbol
+31) All VCC, 5V, 3.3V, etc will use appropriate power symbol.
+32) Every schematic will have the part FRAME-LETTER added to it.
+33) Use two fiducials on each board where applicable. Add the part FIDUCIAL to the schematic.  Use the smallest 1x2mm footprint.
+34) Any board that is larger than ~1” square will most likely require standoffs. Add part: STANDOFFs to the schematic. This part has a keepout layer to show you where the head of the standoff screw will fall. Make sure the head of the screw will not hit any connectors or parts.
+35) Add fiducials, standoff components, and logo box to the lower right area of the schematic sheet.
+36) Use dashed gray lines to separate a complex design into various smaller bits (for example, charge circuit, accelerometer, etc).
+
+
+Footprints:
+37) All footprints need >Name (on tNames layer) and >Value (on tValues layer). Size of both will be 0.016”. If you come across a part on a board that doesn't have this, you must change it and save the library.
+38) All footprints need silkscreen or tDocu indicators showing mechanical sizes, dimensions, or anything weired about the part.
+39) Silkscreen within a footprint or board should NOT go over pads or metal that will be exposed (it'll flake off easily).
+40) Every new footprint and part will have a description containing part information and whether the footprint has been proven.
+
+
+Panelization:
+41) When panelizing a design, copy original board, paste it into a new PCB. Use a 0.1” grid, and place copies of board exactly 0.020” in between copies (all sides). No indicators for v-scoring are needed.
+42) Make sure you are aware of any overhanging parts between copies. A bluetooth module antenna could over-run SMD components on the copy next door.
+
+
+Assembly Sheet:
+43) All assembly sheets will be in PDF form
+44) All assembly sheets will have version number in tValue text below the design
+45) Every part will have value next to the component. Text size should be 0.016”
+46) LEDs must have color indicated
+47) Any component not to be populated will have a large 'DNP' label on part.
+
+
+Printing Schematics:
+48) Print to PDF by hitting the PDF button in Eagle print window
+49) Make sure 'Rotate' is NOT checked
+50) Make sure 'Caption' is NOT checked
+51) Select Sheets : 'All' to print all sheets
+52) Scale factor 1
+
