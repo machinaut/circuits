@@ -1,0 +1,2 @@
+Date:       Who:        Version:  Change:
+02-13-2011  A. Ray      v0.2      Modified BusPirate protoboard to include 0603s and SOT23-5s
