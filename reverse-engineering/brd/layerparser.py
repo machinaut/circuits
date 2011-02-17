@@ -4,12 +4,32 @@ import binascii
 
 layers = {} # dict to hold all the layers
 signals = {}
+header = None
+
+def hexify(s):
+    return " ".join([binascii.hexlify(i) for i in s])
 
 class Header:
     def __init__(self,s):
+        self.s = s
         # The header is interesting, there are a few bytes that keep changing
         # and as far as i can guess, they are some kind of parity or checksum
         # There are 3 bytes that are useful
+        # first byte: edited or not
+        if   s[1] == '\x00':
+            self.edited = False
+        elif s[1] == '\x80':
+            self.edited = True
+        else:
+            self.edited = "Unknown"
+        # Second Byte, 3 + number of layers
+        # TODO- its probably some kind of offset
+        self.layersplus = ord(s[2])
+        # Third Byte, so far just \x00's, could be extension of 2nd or 4th
+        # Fourth Byte, comes out to be \x2a + the number of wires + signals
+        self.wiresignals = ord(s[4])
+    def __str__(self):
+        return hexify(self.s)
 
 class Layer:
     def __init__(self,s):
@@ -91,17 +111,22 @@ class Wire:
         # Second Byte - no idea, so far always \x00
         # Third Byte - Layer
         self.layer = ord(s[3])
-        # Bytes 4-11 make up the Y coordinate
-        # Bytes 12-19 make up the X coordinate
+        # Bytes 4-11 make up the first coordinate
+        # Bytes 12-19 make up the second coordinate
+        # 4 Bytes per value
         # TODO - no idea how they're packed in there
-        self.y = s[4:12]
-        self.x = s[12:19]
+        self.x1 = s[4:8]
+        self.y1 = s[8:12]
+        self.x2 = s[12:16]
+        self.y2 = s[16:20]
         # Last 4 bytes have to do with the thickness
         # TODO - figure that out out too
-        self.thick = s[19:]
-
-def hexify(s):
-    return " ".join([binascii.hexlify(i) for i in s])
+        self.thick = s[20:]
+    def __str__(self):
+        return "Wire - Layer: "+str(self.layer) +" "\
+                +"("+hexify(self.y1)+", "+hexify(self.x1)+") "\
+                +"("+hexify(self.y2)+", "+hexify(self.x2)+") "\
+                +hexify(self.thick)
 
 def parse_file(filename):
     """
@@ -109,21 +134,20 @@ def parse_file(filename):
     """
     f = open(filename, "rb")
     buf = f.read()
-    for i in range(0,len(buf),24):
-        # NOTE: all of these have side effects of being added to a global storage
-        while(buf[i] != '\x13'):
-        if s[0] == '\x13':
-            return Layer(s)
-        if s[0] == '\x1c':
-            return signalname(s)
-        if s[0] == '\x22':
-            return wire(s)
+    i = 24*4
+    # NOTE: all of these have side effects of being added to a global storage
+    header = Header(buf[0:i])
+    while(buf[i] == '\x13'): # Read layers
+        print Layer(buf[i:i+24])
+        i += 24
+    for j in range(i,len(buf),24):
+        if   buf[j] == '\x1c':
+            print Signal(buf[j:j+24])
+        elif buf[j] == '\x22':
+            print Wire(buf[j:j+24])
         else: # dont recognize it
-            return hexify(s)
+            print hexify(buf[j:j+24])
 
-        print parsify(buf[i:i+24])
-    print len(layers), hex(len(layers))
-        
 
 
 if __name__ == "__main__":
