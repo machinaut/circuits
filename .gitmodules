@@ -1,3 +1,6 @@
 [submodule "SparkFun-Eagle-Library"]
 	path = SparkFun-Eagle-Library
 	url = https://github.com/sparkfun/SparkFun-Eagle-Library.git
+[submodule "maple"]
+	path = maple
+	url = https://github.com/leaflabs/maple.git
