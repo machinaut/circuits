@@ -4,3 +4,6 @@
 [submodule "maple"]
 	path = maple
 	url = https://github.com/leaflabs/maple.git
+[submodule "Thinner-Client"]
+	path = Thinner-Client
+	url = https://github.com/davidcranor/Thinner-Client.git
