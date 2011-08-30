@@ -1,0 +1,11 @@
+less code =/= getting done faster.
+
+pObj - just the object
+ppObj - gives the String: Value pair 
+
+trailing commas, (at least its consistent)
+because of the way we have to parse loop objects
+
+dont deal with the picker functions for now, can add those later
+
+based on: ftp://ftp.cadsoft.de/eagle/userfiles/doc/ulp5110_en.pdf

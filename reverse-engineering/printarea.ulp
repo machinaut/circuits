@@ -1,0 +1,5 @@
+output("sample")
+board(B) {
+    printf("Area: (%d %d), (%d%d)\n",
+            B.area.x1, B.area.y1, B.area.x2, B.area.y2);
+}

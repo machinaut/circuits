@@ -1,0 +1,1016 @@
+﻿//EAGLE ULP "import.ulp"
+//(C) 2011-07-17 Andreas Weidner
+
+#usage "den: <table width=100% cellpadding=5 cellspacing=0 bgcolor=#E0E0E0>"
+    "<tr><td><h3>Import a design script</h3>\n"
+    "This program can import an EAGLE design script (*.pse) previously "
+    "created by the <tt>export</tt> program. Both schematics <b>and</b> "
+    "(routed) board are imported, so that the forward&back annotation "
+    "remains working properly.<p>"
+    "<author>&copy; 2011-07-17 Andreas Weidner</author>"
+    "</td></tr></table><br><br>"
+    "<b>Usage:</b><ol>"
+    "<li>You should already have a design script available that was "
+    "previously exported with <tt>run export</tt>.</li>"
+    "<li>Include this into your current design with <tt>run import</tt>.</li>"
+    "</ol><hr>"
+    "The current design (into which you want to import the script) should "
+    "meet the following conditions:<ol>"
+    "<li>Both schematic <b>and</b> board must be available with working "
+    "forward&back annotation.</li>"
+    "<li>The library paths must contain <b>all</b> libraries (in their proper "
+    "versions) used in the imported design.</li>"
+    "<li>Under Linux or Macintosh, all used libraries must have <b>"
+    "lowercase</b> names.</li></ol><hr>"
+    "The following objects are <b>not</b> supported:<ol>"
+    "<li>Content of <b>libraries</b> is not imported. The program relies on "
+    "the necessary libraries (with the correct versions) to be present for "
+    "the target design.</li>"
+    "<li>If a component contains <b>more than one</b> smashed <tt>&gt;NAME"
+    "</tt> text, only one of them is correctly positioned (the others retain "
+    "their original positions). The same applies to other smashed placeholder "
+    "texts. Using the libraries of the AEI, all documentation texts are "
+    "correctly placed, but the position on the board placeplan may differ."
+    "</li>"
+    "<li>Smashed texts whose properties (e.g., layer, size,...) were <b>"
+    "changed after smashing</b> retain their original properties in most "
+    "cases. Under certain circumstances, the text might appear in its "
+    "corresponding mirror layer (e.g., a <tt>tnames</tt> text might be "
+    "mirrored to the <tt>bnames</tt> layer).</li></ol>"
+    "<hr><b>Hints:</b><ol>"
+    "<li>In case of wrong settings or library version inconsistencies, the "
+    "import might fail any time with unpredictable results and leave your "
+    "current design a mess. For safety, backup your design <b>prior</b> to "
+    "importing to prevent data loss.</li>"
+    "<li>If the folder <tt>autoscripts</tt> exists parallel to your ULP "
+    "directory, it is interpreted as a repository of circuit <b>building "
+    "blocks</b>, and you can easily import scripts from that location.</li>"
+    "<li>The file <tt>awtools.inc</tt> is necessary for proper program "
+    "execution, <tt>export.ulp</tt> for the export of 'pse' scripts.</li>"
+    "</ol>",
+  "en: <table width=100% cellpadding=5 cellspacing=0 bgcolor=#E0E0E0>"
+    "<tr><td><h3>Designskript importieren</h3>\n"
+    "Dieses Programm kann ein EAGLE-Designskript (*.pse) importieren, das "
+    "vorher mit dem Programm <tt>export</tt> erzeugt wurde. Sowohl Schaltplan "
+    "<b>als auch</b> (geroutete) Platine werden importiert, so daß die "
+    "Forward&Back-Annotation erhalten bleibt.<p>"
+    "<author>&copy; 2011-07-17 Andreas Weidner</author>"
+    "</td></tr></table><br><br>"
+    "<b>Verwendung:</b><ol>"
+    "<li>Es sollte bereits ein Designskript zur Verfügung stehen, das vorher "
+    "mit <tt>run export</tt> exportiert wurde.</li>"
+    "<li>Dieses Skript nun mit <tt>run import</tt> in das aktuelle Design "
+    "einfügen.</li></ol><hr>"
+    "Das aktuelle Design (in welches das Skript eingefügt werden soll) muß "
+    "folgende Eigenschaften aufweisen:<ol>"
+    "<li>Sowohl Schaltplan <b>als auch</b> Platine müssen mit aktiver "
+    "Forward&Back-Annotation vorhanden sein.</li>"
+    "<li>Die Bibliothekspfade sollten <b>alle</b> Bibliotheken (in den "
+    "korrekten Versionen) enthalten, die für das importierte Skript benötigt "
+    "werden.</li>"
+    "<li>Unter Linux oder auf einem Macintosh dürfen die Namen aller "
+    "verwendeten Bibliotheken nur <b>Kleinbuchstaben</b> enthalten.</li></ol>"
+    "<hr>"
+    "Folgende Objekte werden <b>nicht</b> unterstützt:<ol>"
+    "<li>Bibliotheks<b>inhalte</b> werden nicht importiert. Das Programm "
+    "verläßt sich darauf, daß dem Zieldesign alle nötigen Bibliotheken (in "
+    "der jeweils richtigen Version) zur Verfügung stehen. Ist dies nicht der "
+    "Fall, schlägt der Import fehl.</li>"
+    "<li>Enthält eine Komponente <b>mehr als einen</b> ge\"smash\"ten Text "
+    "<tt>&gt;NAME</tt>, so wird nur einer davon korrekt plaziert (die anderen "
+    "verbleiben an ihren Originalpositionen). Gleiches gilt für andere "
+    "ge\"smash\"te Platzhaltertexte. In Verbindung mit den Bibliotheken des "
+    "AEI werden alle Dokumentationstexte korrekt plaziert, die Position im "
+    "Platinendruck kann jedoch abweichen.</li>"
+    "<li>Ge\"smash\"te Texte, deren Eigenschaften (z.B. Ebene, Größe,...) "
+    "<b>nach dem Auflösen</b> verändert wurden, behalten meistens ihre "
+    "Originaleigenschaften. Unter bestimmten Umständen kann der Text in "
+    "seiner zugehörigen Spiegelebene auftauchen (z.B. kann ein <tt>tnames</tt>"
+    "-Text in der Ebene <tt>bnames</tt> erscheinen).</li></ol>"
+    "<hr><b>Hinweise:</b><ol>"
+    "<li>Im Falle falscher Einstellungen oder abweichender "
+    "Bibliotheksversionen kann der Import jederzeit mit unvorhersagbaren "
+    "Ergebnissen abbrechen und das aktuelle Design in desolatem Zustand "
+    "zurücklassen. Machen Sie daher <b>vor</b> dem Import eine "
+    "Sicherheitskopie Ihres Designs.</tt>.</li>"
+    "<li>Existiert der Ordner <tt>autoscripts</tt> parallel zum eingestellten "
+    "ULP-Verzeichnis, wird er als <b>Schaltungsblock</b>-Lager behandelt, und "
+    "Sie können daraus einfach Skripte importieren.</li>"
+    "<li>Zur korrekten Programmausführung wird die Datei <tt>awtools.inc</tt> "
+    "benötigt, für den Export von \"pse\"-Skripten <tt>export.ulp</tt>.</li>"
+    "</ol>"
+
+#include "awtools.inc"
+
+int NrScript=0;
+string Script[];
+
+int NrParts=0;
+numeric string Parts[];
+int NrOldParts=0;
+numeric string OldParts[];
+numeric string NewParts[];
+
+int NrNets=0;
+numeric string Nets[];
+int NrOldNets=0;
+numeric string OldNets[];
+numeric string NewNets[];
+
+real DeltaXSCH=0;
+real DeltaYSCH=0;
+real DeltaXBRD=0;
+real DeltaYBRD=0;
+
+string FileName;
+
+int MoveSchematic=1;
+int MoveBoard=1;
+int RenameNets=1;
+int RenameNetsNumbered=1;
+int ChangeClasses=1;
+int ChangeLayers=1;
+
+int IsSheetEmpty(UL_SHEET S) {
+  S.busses(B)
+    return 0;
+  S.circles(C)
+    return 0;
+  S.nets(N)
+    return 0;
+  S.parts(P)
+    return 0;
+  S.polygons(P)
+    return 0;
+  S.rectangles(R)
+    return 0;
+  S.texts(T)
+    return 0;
+  S.wires(W)
+    return 0;
+  return 1;
+  }
+
+int IsBoardEmpty(UL_BOARD B) {
+  B.circles(C)
+    return 0;
+  B.elements(E)
+    return 0;
+  B.holes(H)
+    return 0;
+  B.polygons(P)
+    return 0;
+  B.rectangles(R)
+    return 0;
+  B.signals(S)
+    return 0;
+  B.texts(T)
+    return 0;
+  B.wires(W)
+    return 0;
+  return 1;
+  }
+
+enum {srcNone,srcProject,srcAutoScripts};
+
+string SelectProjectScript() {
+  //Lets the user choose a project script with a dialog box and returns path
+  //and filename ("" if cancelled)
+  int Result=srcProject;
+  string AutoScriptFolder,Name;
+  //Check, whether the folder AUTOSCRIPTS exists
+  AutoScriptFolder=filedir(argv[0]);
+  AutoScriptFolder=filedir(strsub(AutoScriptFolder,0,
+    strlen(AutoScriptFolder)-1))+"autoscripts/";
+  if (!AWDirEntryExists(AutoScriptFolder))
+    AutoScriptFolder="";
+  //If yes, ask the user whether to import from the project or the 
+  //'autoscripts' folder. Otherwise, skip this selection and go directly to
+  //the project folder
+  if (AutoScriptFolder)
+    Result=dlgDialog(AWLocalise("Select import source folder",
+        "Import-Quellordner auswählen")) {
+      AWLabel("Select which <b>source folder</b> to search for importable "+
+        "scripts:<hr>","Wählen Sie den <b>Quellordner</b> aus, in dem nach "+
+        "importierbaren Skripten gesucht wird:");
+      dlgGridLayout {
+        dlgCell(0,0)
+          dlgPushButton(AWLocalise("&Design","&Design"))
+            dlgAccept(srcProject);
+        dlgCell(0,1)
+          dlgSpacing(10);
+        dlgCell(0,2)
+          AWLabel("This is the <b>current design</b>'s folder. If you have "+
+            "exported<br>PSE scripts yourself previously, e.g. for channel "+
+            "duplication,<br>use this folder.","Dies ist der Ordner des <b>"+
+            "aktuellen Designs</b>. Wenn Sie selbst<br>bereits PSE-Skripte "+
+            "exportiert haben (z.B. zur Kanalvervielfachung),<br>verwenden "+
+            "Sie dieses Verzeichnis.");
+        dlgCell(1,0,1,2)
+          dlgLabel("<hr>"); 
+        dlgCell(2,0)
+          dlgPushButton(AWLocalise("&Scripts","&Skripte"))
+            dlgAccept(srcAutoScripts);
+        dlgCell(2,2)
+          AWLabel("This is the <b>autoscripts</b> folder, where non-project-"+
+            "specific<br>PSE scripts are stored for general usage. If you "+
+            "need <br>predefined power supplies, bus connections etc., look "+
+            "in<br>this folder.","Dies ist der Ordner <b>autoscripts</b>, in "+
+            "dem sich nicht-projektbezogene<br>PSE-Skripte zur allgemeinen "+
+            "Verwendung befinden. Benötigen Sie<br>vordefinierte "+
+            "Spannungsversorgungen, Busverbindungen u.ä.,<br>suchen Sie in "+
+            "diesem Verzeichnis.");
+        }
+        dlgLabel("<hr>");
+        dlgHBoxLayout {
+          dlgStretch(0);
+          dlgPushButton(AWLocalise("-Cancel","-Abbrechen"))
+            dlgReject(0);
+          }
+      };
+  //Set the search folder to the desired location
+  if (Result==srcProject)
+    Name=filedir(AWProjectName());
+  else if (Result==srcAutoScripts)
+    Name=AutoScriptFolder;
+  else
+    return "";
+  //Let the user select the file to import
+  while (0<1) {
+    Name=dlgFileOpen(AWLocalise("Import design script","Designskript "+
+      "importieren"),Name,"*.pse");
+    if (Name=="")
+      return "";
+    if (AWDirEntryExists(Name))
+      return Name;
+    dlgMessageBox(Name+"\n\n"+AWLocalise("This design script could not be "+
+      "found.","Dieses Designskript wurde nicht gefunden"));
+    return "";
+    }
+  }
+
+string ProjectFileName,ScriptFileName;
+
+void ReadParameters() {
+  int Nr;
+  string Text;
+  ProjectFileName="";
+  ScriptFileName="";
+  if (argc>0)
+    for (Nr=1;Nr<=argc;Nr++) {
+      Text=argv[Nr];
+      if (strsub(strupr(Text),0,8)=="PROJECT=")
+        ProjectFileName=strsub(Text,8);
+      if (strsub(strupr(Text),0,7)=="SCRIPT=")
+        ScriptFileName=strsub(Text,7);
+      }
+  }
+
+ReadParameters();
+
+int Nr;
+
+//As of version 4.x, the Linux version of EAGLE has extreme problems in
+//running SCRIPTS that switch between schematic and board editor: In nearly
+//all cases, the error message "Can't execute while command is running in
+//other window" pops up and nothing is done anymore. Therefore, in case the
+//Linux version is running, warn the user and ask him wether the program
+//shall be executed or not
+/*if ((strsub(argv[0],0,1)=="/") && (strsub(argv[0],0,2)!="//")) {
+  if (dlgMessageBox("This seems to be the Linux version of EAGLE.\r\n"+
+    "Due to a bug in the script management of this version,\r\nthis program "+
+    "may not work properly.\r\n\r\nDo you want to continue anyway?",
+    "Continue","Cancel")==1)
+      exit(0);
+  }*/
+//Exit, if the program was not run from a schematic or board window with
+//working forward/backward annotation
+if (library) {
+  dlgMessageBox("This program cannot be run from within a library");
+  exit(0);
+  }
+if (!project.board) {
+  dlgMessageBox("This program cannot be run in a project without board."+
+    "\n\n(If the appropriate board IS loaded, assure that "+
+    "forward&back annotation\nis switched on and you have write access "+
+    "to the project directory)");
+  exit(0);
+  }
+if (!project.schematic) {
+  dlgMessageBox("This program cannot be run in a project without schematics."+
+    "\n\n(If the appropriate schematic IS loaded, assure that "+
+    "forward&back annotation\nis switched on and you have write access "+
+    "to the project directory)");
+  exit(0);
+  }
+if (board)
+  exit("EDIT .sch;\nRUN '"+argv[0]+"'");
+schematic(S)
+  ProjectFileName=S.name;
+
+//Let the user choose a script via a dialog box. On cancel exit
+if (ScriptFileName=="")
+  ScriptFileName=SelectProjectScript();
+if (ScriptFileName=="")
+  exit("");
+//Read the complete script into a string array. On problems exit
+NrScript=fileread(Script,ScriptFileName);
+if (NrScript<1) {
+  AWError(FileName+"<br><br>This script contains no commands.",FileName+
+    "<br><br>Dieses Skript enthält keine Befehle.");
+  exit("");
+  }
+
+int Result;
+
+int ExtractFirstElement(string Text,int IsPart) {
+  int Pos,Length;
+  string Element;
+  if (IsPart)
+    Pos=strstr(Text,"<PP@");
+  else
+    Pos=strstr(Text,"<NN@");
+  if (Pos<=0)
+    return 0;
+  Length=Pos;
+  Element=strsub(Text,Pos+4);
+  Pos=strstr(Element,">");
+  if (Pos>=0)
+    Element=strsub(Element,0,Pos);
+  if (IsPart) {
+    if (lookup(OldParts,Element,0)=="") {
+      sprintf(OldParts[NrOldParts],Element+"\t%d",NrOldParts);
+      NrOldParts=NrOldParts+1;
+      }
+    }
+  else {
+    if (lookup(OldNets,Element,0)=="") {
+      sprintf(OldNets[NrOldNets],Element+"\t%d",NrOldNets);
+      NrOldNets=NrOldNets+1;
+      }
+    }
+  return Length+strlen(Element);
+  }
+
+
+//Read the number of sheets used in the script and the current project
+int Found;
+string Text;
+int ScriptSheetNr,ProjectSheetNr;
+
+ScriptSheetNr=0;
+for  (Nr=0;Nr<NrScript;Nr++)
+  if (strstr(Script[Nr],"<SS@")>0)
+    ScriptSheetNr++;
+ProjectSheetNr=0;
+project.schematic(S)
+  S.sheets(SH)
+    ProjectSheetNr++;
+
+//Read all part and net names used in the script
+
+for (Nr=0;Nr<NrScript;Nr++) {
+  Text=Script[Nr];
+  Found=1;
+  while (Found) {
+    Found=ExtractFirstElement(Text,1);
+    if (Found)
+      Text=strsub(Text,Found);
+    }
+  Text=Script[Nr];
+  Found=1;
+  while (Found) {
+    Found=ExtractFirstElement(Text,0);
+    if (Found)
+      Text=strsub(Text,Found);
+    }
+  }
+
+//Get all part and net names already used in the project
+project.schematic(S)
+  S.sheets(SH) {
+    //By some mysterious reason, one cannot just use S.parts or S.nets. These
+    //objects are defined in EAGLE, but EAGLE just crashes with an "invalid
+    //supply access" error if the program is run from within the BOARD editor
+    //(otherwise it's OK). This problem does NOT occur when using SH.parts
+    SH.parts(P)
+      if (lookup(Parts,P.name,0)=="") {
+        Parts[NrParts]=P.name;
+        NrParts=NrParts+1;
+        }
+    SH.nets(N)
+      if (lookup(Nets,N.name,0)=="") {
+        Nets[NrNets]=N.name;
+        NrNets=NrNets+1;
+        }
+    }
+project.board(B) {
+  B.elements(E)
+    if (lookup(Parts,E.name,0)=="") {
+      Parts[NrParts]=E.name;
+      NrParts=NrParts+1;
+      }
+  B.signals(S)
+    if (lookup(Nets,S.name,0)=="") {
+      Nets[NrNets]=S.name;
+      NrNets=NrNets+1;
+      }
+  }
+
+string IncNameNr(string Name) {
+  //Returns a changed name string based on NAME, so that the number at the end
+  //of the string is incremented by 1
+  string Result;
+  int Nr;
+  //If no string is given, set the new string to "1"
+  if (Name=="")
+    return "1";
+  //Check all characters from the end of the string backwards wether they are
+  //digits or not. If a non-digit character was found, the rest of the string
+  //is the current number. Increment this and put it behind the non-numbered
+  //name string
+  for (Nr=strlen(Name)-1;Nr>=0;Nr--) {
+    if ((strsub(Name,Nr,1)<"0") || (strsub(Name,Nr,1)>"9")) {
+      sprintf(Result,strsub(Name,0,Nr+1)+"%d",strtol(strsub(Name,Nr+1))+1);
+      return Result;
+      }
+    }
+  //All characters in the string are digits. Therefore, just increment this
+  //number and return it as string
+  sprintf(Result,"%d",strtol(Name)+1);
+  return Result;
+  }
+
+string GetNewPartName(string Name) {
+  //Returns a changed part name string based on the NAME, so that the new part
+  //name doesn't exist in the project yet (the number at the end of the string
+  //is incremented until the part can't be found)
+  string Result=Name;
+  //Delete everything after the tab character in the string (if available)
+  int Pos=strchr(Result,'\t');
+  if (Pos>=0)
+    Result=strsub(Result,0,Pos);
+  //The new part must neither be available in the current project, nor in the
+  //newly inserted parts
+  int Found=((lookup(Parts,Result,0)!="") || (lookup(NewParts,Result,0)!=""));
+  while (Found) {
+    Result=IncNameNr(Result);
+    Found=((lookup(Parts,Result,0)!="") || (lookup(NewParts,Result,0)!=""));
+    }
+  return Result;
+  }
+
+string GetNewNetName(string Name) {
+  //Returns a changed net name string based on the NAME, so that the new net
+  //name doesn't exist in the project yet (the number at the end of the string
+  //is incremented until the net can't be found)
+  string Result=Name;
+  //Delete everything after the tab character in the string (if available)
+  int Pos=strchr(Result,'\t');
+  if (Pos>=0)
+    Result=strsub(Result,0,Pos);
+  //Only renumber the net if renaming is desired
+  if (RenameNets) {
+    //Renumber only the nets that contain a "$" (or all, if this option is not
+    //desired)
+    if ((!RenameNetsNumbered) || (strchr(Result,'$')>=0)) {
+      //The new net must neither be available in the current project, nor in
+      //the newly inserted nets
+      int Found=((lookup(Nets,Result,0)!="") || (lookup(NewNets,Result,
+        0)!=""));
+      while (Found) {
+        Result=IncNameNr(Result);
+        Found=((lookup(Nets,Result,0)!="") || (lookup(NewNets,Result,0)!=""));
+        }
+      }
+    }
+  return Result;
+  }
+
+void RenumberParts() {
+  //Renumbers all parts in the script line array
+  int Nr,Pos;
+  string Text,NewText,Name;
+  //Go through all strings of the script array
+  for (Nr=0;Nr<NrScript;Nr++) {
+    //Text contains the "rest" of the line that has not yet been processed,
+    //NewText contains the already processed and therefore finished part
+    Text=Script[Nr];
+    NewText="";
+    //Search for the part identifier
+    Pos=strstr(Text,"<PP@");
+    while (Pos>=0) {
+      //If this can be found, define everything in front of it as processed
+      //and search for the closing bracket
+      NewText=NewText+strsub(Text,0,Pos);
+      Text=strsub(Text,Pos+4);
+      Pos=strchr(Text,'>');
+      if (Pos>=0) {
+        //If  this is available, extract the name string in front of it and
+        //keep the rest of the string behind it
+        Name=strsub(Text,0,Pos);
+        Text=strsub(Text,Pos+1);
+        }
+      else {
+        //If no closing bracket is available, the name string contains
+        //everything, and there's no string rest
+        Name=Text;
+        Text="";
+        }
+      //Search in the old part names list for the extracted name. The second
+      //column of the string contains its row. Insert the new part name of
+      //this row to the already processed text
+      Name=NewParts[strtol(lookup(OldParts,Name,1))];
+      NewText=NewText+Name;
+      //Search other part identifier occurrences
+      Pos=strstr(Text,"<PP@");
+      }
+    //No additional part identifiers found. Then just keep the rest of the
+    //string and change the script array accordingly
+    Script[Nr]=NewText+Text;
+    }
+  }
+
+void RenumberNets() {
+  //Renumbers all nets in the script line array
+  int Nr,Pos;
+  string Text,NewText,Name;
+  //Go through all strings of the script array
+  for (Nr=0;Nr<NrScript;Nr++) {
+    //Text contains the "rest" of the line that has not yet been processed,
+    //NewText contains the already processed and therefore finished part
+    Text=Script[Nr];
+    NewText="";
+    //Search for the net identifier
+    Pos=strstr(Text,"<NN@");
+    while (Pos>=0) {
+      //If this can be found, define everything in front of it as processed
+      //and search for the closing bracket
+      NewText=NewText+strsub(Text,0,Pos);
+      Text=strsub(Text,Pos+4);
+      Pos=strchr(Text,'>');
+      if (Pos>=0) {
+        //If  this is available, extract the name string in front of it and
+        //keep the rest of the string behind it
+        Name=strsub(Text,0,Pos);
+        Text=strsub(Text,Pos+1);
+        }
+      else {
+        //If no closing bracket is available, the name string contains
+        //everything, and there's no string rest
+        Name=Text;
+        Text="";
+        }
+      //If nets are to be renumbered, search in the old net names list for
+      //the extracted name. The second column of the string contains its row.
+      //Insert the new net name of this row to the already processed text. If
+      //no renumbering is desired, or the net name does NOT contain a "$" and
+      //only "$"ed nets are to be renumbered, just leave the name as it is
+//      if (RenameNets) {
+  //      if ((!RenameNetsNumbered) || (strchr(Name,'$')>=0))
+          Name=NewNets[strtol(lookup(OldNets,Name,1))];
+//        }
+      NewText=NewText+Name;
+      //Search other net identifier occurrences
+      Pos=strstr(Text,"<NN@");
+      }
+    //No additional net identifiers found. Then just keep the rest of the
+    //string and change the script array accordingly
+    Script[Nr]=NewText+Text;
+    }
+  }
+
+int SCHAreaDefined=0;
+real SCHAreaX1,SCHAreaY1,SCHAreaX2,SCHAreaY2;
+int BRDAreaDefined=0;
+real BRDAreaX1,BRDAreaY1,BRDAreaX2,BRDAreaY2;
+
+void GetImportAreas() {
+  int Nr,Pos,IsSchematic=0,IsBoard=0;
+  string Text,Numbers[];
+  //Go through all strings of the script array
+  for (Nr=0;Nr<NrScript;Nr++) {
+    //Check, wether the following script lines belong to the schematics or to
+    //the board
+    Text=strupr(Script[Nr]);
+    if (strstr(Text,"EDIT")>=0) {
+      if (strstr(Text,".SCH")>=0) {
+        IsSchematic=1;
+        IsBoard=0;
+        }
+      else if (strstr(Text,".BRD")>=0) {
+        IsSchematic=0;
+        IsBoard=1;
+        }
+      }
+    //Search for the area delimiter
+    Pos=strstr(Text,"<AREA@");
+    if (Pos>=0) {
+      Text=strsub(Text,Pos+6);
+      Pos=strchr(Text,'>');
+      if (Pos>=0)
+        Text=strsub(Text,0,Pos);
+      if (strsplit(Numbers,Text,' ')==4) {
+        if (IsSchematic) {
+          SCHAreaX1=strtod(Numbers[0]);
+          SCHAreaY1=strtod(Numbers[1]);
+          SCHAreaX2=strtod(Numbers[2]);
+          SCHAreaY2=strtod(Numbers[3]);
+          SCHAreaDefined=1;
+          }
+        if (IsBoard) {
+          BRDAreaX1=strtod(Numbers[0]);
+          BRDAreaY1=strtod(Numbers[1]);
+          BRDAreaX2=strtod(Numbers[2]);
+          BRDAreaY2=strtod(Numbers[3]);
+          BRDAreaDefined=1;
+          }
+        }
+      }
+    }
+  //If the script schematics contain more than one sheet, ALL of them are put
+  //into NEW sheets of the current project. Therefore, the schematics area is
+  //not defined in this case
+  if (ScriptSheetNr>1)
+    SCHAreaDefined=0;
+  }
+
+void CalcDelta() {
+string s;
+  DeltaXSCH=0;
+  DeltaYSCH=0;
+  sheet(S) {
+    if ((sheet) && (SCHAreaDefined) && (!IsSheetEmpty(S))) {
+      DeltaXSCH=ceil(((real(S.area.x2)/10)-SCHAreaX1+254)/2540)*2540;
+      DeltaYSCH=ceil(((real(S.area.y2)+real(S.area.y1))/20-(SCHAreaY2+
+        SCHAreaY1)/2)/2540)*2540;
+      }
+    }
+  DeltaXBRD=0;
+  DeltaYBRD=0;
+  project.board(B) {
+    if ((BRDAreaDefined) && (!IsBoardEmpty(B))) {
+      DeltaXBRD=ceil(((real(B.area.x2)/10)-BRDAreaX1+254)/2540)*2540;
+      DeltaYBRD=ceil(((real(B.area.y2)+real(B.area.y1))/20-(BRDAreaY2+
+        BRDAreaY1)/2)/2540)*2540;
+      }
+    }
+  }
+
+void MovePoints() {
+  //Moves all points in the script array
+  int Nr,Pos;
+  string Text,NewText,Number;
+  real DeltaX=0.0,DeltaY=0.0;
+
+  GetImportAreas();
+  CalcDelta();
+
+  //Go through all strings of the script array
+  for (Nr=0;Nr<NrScript;Nr++) {
+    //Check, wether the following script lines belong to the schematics or to
+    //the board and set the movement delta accordingly (if desired)
+    Text=strupr(Script[Nr]);
+    if (strstr(Text,"EDIT")>=0) {
+      if (strstr(Text,".SCH")>=0) {
+        DeltaX=DeltaXSCH;
+        DeltaY=DeltaYSCH;
+        if (!MoveSchematic) {
+          DeltaX=0.0;
+          DeltaY=0.0;
+          }
+        }
+      else if (strstr(Text,".BRD")>=0) {
+        DeltaX=DeltaXBRD;
+        DeltaY=DeltaYBRD;
+        if (!MoveBoard) {
+          DeltaX=0.0;
+          DeltaY=0.0;
+          }
+        }
+      }
+    //Text contains the "rest" of the line that has not yet been processed,
+    //NewText contains the already processed and therefore finished part
+    Text=Script[Nr];
+    NewText="";
+    //Search for the x identifier
+    Pos=strstr(Text,"<XX@");
+    while (Pos>=0) {
+      //If this can be found, define everything in front of it as processed
+      //and search for the closing bracket
+      NewText=NewText+strsub(Text,0,Pos);
+      Text=strsub(Text,Pos+4);
+      Pos=strchr(Text,'>');
+      if (Pos>=0) {
+        //If  this is available, extract the number string in front of it and
+        //keep the rest of the string behind it
+        Number=strsub(Text,0,Pos);
+        Text=strsub(Text,Pos+1);
+        }
+      else {
+        //If no closing bracket is available, the number string contains
+        //everything, and there's no string rest
+        Number=Text;
+        Text="";
+        }
+      //Add the DeltaX to the current x coordinate and add the new number
+      //string to the already processed text
+      sprintf(Number,"%.1f",strtod(Number)+DeltaX);
+      NewText=NewText+Number;
+      //Search other x identifier occurrences
+      Pos=strstr(Text,"<XX@");
+      }
+    //No additional x identifiers found. Then just keep the rest of the
+    //string and do everything once more for the y identifier
+    Text=NewText+Text;
+    NewText="";
+    //Search for the x identifier
+    Pos=strstr(Text,"<YY@");
+    while (Pos>=0) {
+      //If this can be found, define everything in front of it as processed
+      //and search for the closing bracket
+      NewText=NewText+strsub(Text,0,Pos);
+      Text=strsub(Text,Pos+4);
+      Pos=strchr(Text,'>');
+      if (Pos>=0) {
+        //If  this is available, extract the number string in front of it and
+        //keep the rest of the string behind it
+        Number=strsub(Text,0,Pos);
+        Text=strsub(Text,Pos+1);
+        }
+      else {
+        //If no closing bracket is available, the number string contains
+        //everything, and there's no string rest
+        Number=Text;
+        Text="";
+        }
+      //Add the DeltaX to the current x coordinate and add the new number
+      //string to the already processed text
+      sprintf(Number,"%.1f",strtod(Number)+DeltaY);
+      NewText=NewText+Number;
+      //Search other x identifier occurrences
+      Pos=strstr(Text,"<YY@");
+      }
+    //No additional Y identifiers found. Then just keep the rest of the
+    //string and do everything once more for the sheet identifier
+    Text=NewText+Text;
+    NewText="";
+    //Search for the sheet identifier
+    Pos=strstr(Text,"<SS@");
+    if ((Pos>=0) && (ScriptSheetNr<2)) {
+      Pos=-1;
+      NewText="";
+      Text="";
+      }
+    while (Pos>=0) {
+      //If this can be found, define everything in front of it as processed
+      //and search for the closing bracket
+      NewText=NewText+strsub(Text,0,Pos);
+      Text=strsub(Text,Pos+4);
+      Pos=strchr(Text,'>');
+      if (Pos>=0) {
+        //If  this is available, extract the number string in front of it and
+        //keep the rest of the string behind it
+        Number=strsub(Text,0,Pos);
+        Text=strsub(Text,Pos+1);
+        }
+      else {
+        //If no closing bracket is available, the number string contains
+        //everything, and there's no string rest
+        Number=Text;
+        Text="";
+        }
+      //Add the DeltaX to the current x coordinate and add the new number
+      //string to the already processed text
+      sprintf(Number,"%d",strtol(Number)+ProjectSheetNr);
+      NewText=NewText+Number;
+      //Search other sheet identifier occurrences
+      Pos=strstr(Text,"<SS@");
+      }
+    //No additional sheet identifiers found. Then just keep the rest of the
+    //string and change the script array accordingly
+    Script[Nr]=NewText+Text;
+    }
+  }
+
+Result=dlgDialog(AWLocalise("Import Design Script",
+    "Designskript importieren")) {
+  dlgSpacing(dlgSpace);
+  dlgLabel("<b>"+AWLocalise("File name","Dateiname")+":</b>&nbsp;&nbsp;&nbsp;"+
+    ScriptFileName);
+  dlgSpacing(dlgSpace);
+  dlgGroup(AWLocalise("POSITION","POSITION")) {
+    dlgCheckBox(AWLocalise("Place the imported SCHEMATICS next to the "+
+      "existing drawing\n(Prevent the imported circuit from obscuring the "+
+      "current schematics)","Importierten SCHALTPLAN neben die vorhandene "+
+      "Zeichnung plazieren\n(Verdecken des aktuellen Plans durch die "+
+      "importierte Schaltung verhindern)"),MoveSchematic);
+    dlgCheckBox(AWLocalise("Place the imported BOARD next to the existing "+
+      "layout\n(Prevent the imported circuit from obscuring the current "+
+      "board)","Importierte PLATINE neben das vorhandene Layout plazieren\n"+
+      "(Verdecken des aktuellen durch das importierte Layout verhindern)"),
+      MoveBoard);
+    }
+  dlgSpacing(dlgSpace);
+  dlgGroup(AWLocalise("RENUMBERING","UMNUMERIEREN")) {
+    dlgCheckBox(AWLocalise("Rename imported NETS and signals\n(Prevent the "+
+      "imported circuit from being connected to the current one)",
+      "Importierte NETZE und Signale umbenennen\n(Verbindungen zwischen "+
+      "aktueller und importierter Schaltung verhindern)"),RenameNets) {
+      if (!RenameNets)
+        RenameNetsNumbered=0;
+      };
+    dlgHBoxLayout {
+      dlgSpacing(20);
+      dlgCheckBox(AWLocalise("Renumber ONLY net and signal names containing "+
+        "a '$' character\n(Leave the other net names intact and connect them "+
+        "to the current circuit)","NUR Netz- und Signalnamen umnumerieren, "+
+        "die ein \"$\"-Zeichen enthalten\n(Andere Netznamen beibehalten und "+
+        "mit der aktuellen Schaltung verbinden)"),RenameNetsNumbered) {
+        if (RenameNetsNumbered)
+          RenameNets=1;
+        };
+      }
+    }
+  dlgSpacing(dlgSpace);
+  dlgGroup(AWLocalise("DEFINITIONS","DEFINITIONEN")) {
+    dlgCheckBox(AWLocalise("Import CLASS definitions\n(Overwrite the current "+
+      "class settings with the ones from the imported circuit)",
+      "KLASSENdefinitionen importieren\n(Aktuelle Klasseneinstellungen mit "+
+      "denen der importierten Schaltung überschreiben)"),ChangeClasses);
+    dlgCheckBox(AWLocalise("Import LAYER definitions\n(Overwrite the current "+
+      "layer names with the ones from the imported circuit)",
+      "EBENENdefinitionen importieren\n(Aktuelle Ebeneneinstellungen mit "+
+      "denen der importierten Schaltung überschreiben)"),ChangeLayers);
+    }
+  dlgSpacing(6);
+  dlgHBoxLayout {
+    dlgStretch(0);
+    dlgPushButton("+OK") dlgAccept();
+    dlgPushButton(AWLocalise("-Cancel","-Abbrechen")) dlgReject();
+    }
+  };
+if (Result<=0)
+  exit(0);
+
+for (Nr=0;Nr<NrOldParts;Nr++)
+  NewParts[Nr]=GetNewPartName(OldParts[Nr]);
+for (Nr=0;Nr<NrOldNets;Nr++)
+  NewNets[Nr]=GetNewNetName(OldNets[Nr]);
+
+  RenumberParts();
+  RenumberNets();
+  MovePoints();
+
+for (Nr=0;Nr<NrOldNets;Nr++) {
+  Text=strsub(OldNets[Nr],0,strchr(OldNets[Nr],'\t'));
+  if (Text==NewNets[Nr])
+    Text="";
+  Text=Text+"\t"+NewNets[Nr];
+  if ((lookup(Nets,NewNets[Nr],0)!=""))
+    Text=Text+"\tYes";
+  OldNets[Nr]=Text;
+  }
+
+for (Nr=0;Nr<NrOldParts;Nr++) {
+  Text=strsub(OldParts[Nr],0,strchr(OldParts[Nr],'\t'));
+  if (Text==NewParts[Nr])
+    Text="";
+  Text=Text+"\t"+NewParts[Nr];
+  OldParts[Nr]=Text;
+  }
+
+string Command="";
+
+void WriteScriptLine(string Text) {
+  int Pos;
+  string Dummy=strupr(Text);
+  if (!ChangeClasses) {
+    Pos=strstr(Dummy,"CLASS");
+    if ((Pos>=0) && (Pos<=5))
+      Dummy="";
+    }
+  if (!ChangeLayers) {
+    Pos=strstr(Dummy,"LAYER");
+    if ((Pos>=0) && (Pos<=5))
+      Dummy="";
+    }
+  Pos=strstr(Dummy,"<AREA@");
+  if ((Pos>=0) && (Pos<=5))
+    Dummy="";
+
+  Pos=strstr(Dummy,"<DEVICE");
+  if ((Pos>=0) && (Pos<=2))
+    Dummy="";
+  Pos=strstr(Dummy,"<GATE");
+  if ((Pos>=0) && (Pos<=2))
+    Dummy="";
+
+
+  if (Dummy!="")
+    Command=Command+Text+"\n";
+  }
+
+for (Nr=0;Nr<NrScript;Nr++)
+  WriteScriptLine(Script[Nr]);
+
+int Dummy1=-1,Dummy2=-1;
+Result=dlgDialog(AWLocalise("Edit Import Script","Importskript bearbeiten")) {
+  dlgTabWidget {
+    dlgTabPage(AWLocalise("NET INFO","NETZ-INFO")) {
+      dlgHBoxLayout {
+        dlgSpacing(dlgSpace);
+        dlgVBoxLayout {
+          dlgSpacing(dlgSpace);
+          AWLabel("The following nets and signals are used by the imported "+
+            "circuit:","Die importierte Schaltung verwendet folgende Netze "+
+            "und Signale:");
+          dlgSpacing(dlgSpace);
+          dlgListView(AWLocalise("Old name (if changed)     \tNew name     \t"+
+            "Connection to current design?","Alter Name (falls verändert)"+
+            "     \tNeuer Name     \tVerbindung zum aktuellen Design?"),
+            OldNets,Dummy1);
+          dlgSpacing(dlgSpace);
+          AWLabel("(Changes made by editing the script manually are <b>not"+
+            "</b> reflected here)","(Änderungen durch manuelles Editieren "+
+            "des Skripts tauchen hier <b>nicht</b> auf)");
+          dlgSpacing(dlgSpace);
+          }
+        dlgSpacing(dlgSpace);
+        }
+      }
+    dlgTabPage(AWLocalise("PART INFO","BAUTEIL-INFO")) {
+      dlgHBoxLayout {
+        dlgSpacing(dlgSpace);
+        dlgVBoxLayout {
+          dlgSpacing(dlgSpace);
+          AWLabel("The following parts and elements are used by the imported "+
+            "circuit:","Folgende Bauteile und Elemente werden in der "+
+            "importierten Schaltung benutzt:");
+          dlgSpacing(dlgSpace);
+          dlgListView(AWLocalise("Old name (if changed)     \tNew name     ",
+            "Alter Name (falls verändert)     \tNeuer Name     "),OldParts,
+            Dummy2);
+          dlgSpacing(dlgSpace);
+          AWLabel("(Changes made by editing the script manually are <b>not"+
+            "</b> reflected here)","(Änderungen durch manuelles Editieren "+
+            "des Skripts tauchen hier <b>nicht</b> auf)");
+          dlgSpacing(dlgSpace);
+          }
+        dlgSpacing(dlgSpace);
+        }
+      }
+    dlgTabPage(AWLocalise("SCRIPT","SKRIPT")) {
+      dlgGridLayout {
+        dlgCell(0,0) {
+          dlgVBoxLayout {
+            dlgSpacing(350);
+            }
+          }
+        dlgCell(0,1) {
+          dlgSpacing(dlgSpace);
+          dlgVBoxLayout {
+            dlgSpacing(dlgSpace);
+            AWLabel("Only <b>experiencedy/b> EAGLE users should edit this "+
+              "script!","Nur <b>erfahrene</b> EAGLE-Benutzer sollten dieses "+
+              "Skript ändern!");
+            dlgSpacing(dlgSpace);
+            dlgTextEdit(Command);
+            dlgSpacing(dlgSpace);
+            }
+          dlgSpacing(dlgSpace);
+          }
+        dlgCell(1,1) {
+          dlgSpacing(500);
+          }
+        }
+      }
+    }
+  dlgSpacing(6);
+  dlgHBoxLayout {
+    dlgStretch(0);
+    dlgPushButton(AWLocalise("+Execute","+Ausführen"))
+      dlgAccept();
+    dlgPushButton(AWLocalise("Save","Speichern")) {
+      FileName=filesetext(FileName,".scr");
+      FileName=dlgFileSave(AWLocalise("Save import script","Importskript "+
+        "speichern"),FileName,"*.scr");
+      if (FileName!="")
+        output(FileName) {
+          printf("%s",Command);
+          }
+      dlgReject();
+      }
+    dlgPushButton(AWLocalise("-Cancel","-Abbrechen"))
+      dlgReject();
+    }
+  };
+if (Result<=0)
+  exit(0);
+
+project.schematic(S)
+FileName=filesetext(S.name,".import.scr");
+output(FileName,"wt")
+  printf("%s",Command);
+exit("SCRIPT '"+FileName+"'");
+//exit(Command);

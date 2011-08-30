@@ -1,0 +1,80 @@
+Object Hierarchy of a Library:
+LIBRARY
+    GRID
+    LAYER
+    DEVICESET
+        DEVICE
+        GATE
+    PACKAGE
+        CONTACT
+            PAD
+            SMD
+        CIRCLE
+        HOLE
+        RECTANGLE
+        FRAME
+        TEXT
+        WIRE
+        POLYGON
+            WIRE
+    SYMBOL
+        PIN
+        CIRCLE
+        RECTANGLE
+        FRAME
+        TEXT
+        WIRE
+        POLYGON
+            WIRE
+
+Object Hierarchy of a Schematic:
+Schematic
+    Grid
+    Layer
+    Library
+    Sheet
+        Circle
+        Rectangle
+        Frame
+        Text
+        Wire
+        Polygon
+            Wire
+        Part
+            Instance
+                Attribute
+        Bus
+            Segment
+                Label
+                    Text
+                    Wire
+                Wire
+        Net
+            Segment
+                Junction
+                Pinref
+                Text
+                Wire
+
+Object Hierarchy of a Board:
+Board
+    Grid
+    Layer
+    Library
+    Circle
+    Hole
+    Rectangle
+    Frame
+    Text
+    Wire
+    Polygon
+        Wire
+    Element
+        Attribute
+    Signal
+        Contactref
+        Polygon
+            Wire
+        Via
+        Wire
+

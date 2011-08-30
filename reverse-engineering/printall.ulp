@@ -1,0 +1,44 @@
+// export-json.ulp
+// Copyright © 2009 ShareBrained Technology, Inc.
+// http://www.sharebrained.com/
+// This source code released under the GNU General
+
+string pkCap(int cap) { // pick CAP_...
+    switch (cap) {
+        case CAP_FLAT: return "CAP_FLAT";
+        case CAP_ROUND: return "CAP_ROUND";
+        default: return "CAP_unknown";
+    }
+}
+string pkWireStyle(int style) { // pick WIRE_STYLE_...
+    switch(style) {
+        case WIRE_STYLE_CONTINUOUS: return "WIRE_STYLE_CONTINUOUS";
+        case WIRE_STYLE_LONGDASH: return "WIRE_STYLE_LONGDASH";
+        case WIRE_STYLE_SHORTDASH: return "WIRE_STYLE_SHORTDASH";
+        case WIRE_STYLE_DASHDOT: return "WIRE_STYLE_DASHDOT";
+        default: return "WIRE_STYLE_unknown";
+    }
+}
+void pArc(UL_ARC A) { // print ARC
+    printf(" Arc:{ angle1:%g angle2:%g cap:%s layer:%d radius:%d width:%d "
+        "x1:%d y1:%d x2:%d y2:%d xc:%d yc:%d }\n",
+        A.angle1, A.angle2, pkCap(A.cap), A.layer, A.radius, A.width,
+        A.x1, A.y1, A.x2, A.y2, A.xc, A.yc);
+}
+void pWire(UL_WIRE W) { // print WIRE
+    printf(" Wire:{ ");
+    %s %s %g %d %s %d %d %d %d %d",
+        pArc(W.arc), pkCap(W.cap), W.curve, W.layer, pkWireStyle(W.style),
+        W.width, W.x1, W.y1, W.x2, W.y2);
+    W.pieces(P) {
+        pWire(P);
+    }
+    printf("}");
+}
+output("board.txt")
+board(B) {
+    string bord;
+    sprintf(bord, "Area: (%d %d), (%d%d)\n",
+            B.area.x1, B.area.y1, B.area.x2, B.area.y2);
+    printf("%s",bord);
+}

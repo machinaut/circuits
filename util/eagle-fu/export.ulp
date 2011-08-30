@@ -1,0 +1,1315 @@
+//EAGLE ULP "export.ulp"
+//(C) 2011-07-17 Andreas Weidner
+
+#usage "en: <table width=100% cellpadding=5 cellspacing=0 bgcolor=#E0E0E0>"
+    "<tr><td><h3>Export a design as script</h3>\n"
+    "This program creates a script file from the current design, which can "
+    "then be imported into other designs. Both schematics <b>and</b> "
+    "(routed) board are included, so that the forward&back annotation remains "
+    "working properly.<p>"
+    "<author>&copy; 2011-07-17 Andreas Weidner</author>"
+    "</td></tr></table><br><br>"
+    "<b>Usage:</b><ol>"
+    "<li>Export a design to a script with <tt>run export</tt>.</li>"
+    "<li>Import this into another design with <tt>run import</tt>.</li></ol>"
+    "<hr>"
+    "The following types of export scripts can be created:<ol>"
+    "<li>An <b>importable 'pse' design script</b> is a file that can only be "
+    "used together with the <tt>import</tt> program. This allows automatic "
+    "repositioning and renumbering of all objects, so that there is no "
+    "interference between the current and the imported circuit.</li>"
+    "<li>A <b>standard EAGLE design script</b> is a file that can be "
+    "directly used together with the <tt>script</tt> command. Objects are "
+    "placed and connected <b>exactly</b> as in the source design, so "
+    "problems might occur when using this script in non-empty designs.</li>"
+    "</ol><hr>"
+    "The exported design should meet the following conditions:<ol>"
+    "<li>Both schematic <b>and</b> board must be available with working "
+    "forward&back annotation.</li>"
+    "<li>The location of <b>all</b> schematic pins must be different. If this "
+    "condition is not met, a warning is displayed, the offending pins are "
+    "marked in the layer <tt>ExportErrors</tt>, and the program is aborted."
+    "</li>"
+    "<li>Under Linux or on a Macintosh, all used libraries must have "
+    "<b>lowercase</b> names.</li></ol><hr>"
+    "The following objects are <b>not</b> supported:<ol>"
+    "<li>Content of <b>libraries</b> is not exported. The program relies on "
+    "the necessary libraries (with the correct versions) to be present for "
+    "the target design. If this is not the case, the later import will fail."
+    "</li>"
+    "<li>If a component contains <b>more than one</b> smashed <tt>&gt;NAME"
+    "</tt> text, only one of them is correctly positioned during import (the "
+    "others retain their original positions). The same applies to other "
+    "smashed placeholder texts. Using the libraries of the AEI, all "
+    "documentation texts are correctly placed, but the position on the board "
+    "placeplan may differ.</li>"
+    "<li>Smashed texts whose properties (e.g., layer, size,...) were <b>"
+    "changed after smashing</b> retain their original properties in most "
+    "cases. Under certain circumstances, the text might appear in its "
+    "corresponding mirror layer (e.g., a <tt>tnames</tt> text might be "
+    "mirrored to the <tt>bnames</tt> layer).</li></ol>"
+    "<hr><b>Hints:</b><ol>"
+    "<li>To create easily reusable circuit <b>building blocks</b>, you can "
+    "save your exported scripts into the folder <tt>autoscripts</tt>, which "
+    "should reside parallel to your ULP folder. If such a special folder "
+    "exists, the import program makes use of it.</li>"
+    "<li>If you do not want to export anything, but just delete the pin error "
+    "marks from previous sessions, use <tt>run export removeerrors</tt>.</li>"
+    "<li>The file <tt>awtools.inc</tt> is necessary for proper program "
+    "execution, <tt>import.ulp</tt> for the import of 'pse' scripts.</li>"
+    "</ol>",
+  "de: <table width=100% cellpadding=5 cellspacing=0 bgcolor=#E0E0E0>"
+    "<tr><td><h3>Design als Skript exportieren</h3>\n"
+    "Dieses Programm erzeugt aus dem aktuellen Design eine Skriptdatei, die "
+    "dann in andere Designs importiert werden kann. Sowohl Schaltplan <b>"
+    "als auch</b> (geroutete) Platine werden einbezogen, so daß die "
+    "Forward&Back-Annotation erhalten bleibt.<p>"
+    "<author>&copy; 2011-07-17 Andreas Weidner</author>"
+    "</td></tr></table><br><br>"
+    "<b>Verwendung:</b><ol>"
+    "<li>Design mit <tt>run export</tt> als Skript exportieren.</li>"
+    "<li>Dieses dann mit <tt>run import</tt> in ein anderes Design "
+    "importieren.</li></ol><hr>"
+    "Folgende Arten von Exportskripten können erzeugt werden:<ol>"
+    "<li>Ein <b>importierbares 'pse'-Designskript</b> ist eine Datei, die "
+    "nur zusammen mit dem <tt>import</tt>-Programm verwendet werden kann. "
+    "Dies ermöglicht das automatische Verschieben und Umnumerieren aller "
+    "Objekte, so daß sich aktuelle und importierte Schaltung nicht "
+    "beeinflussen.</li>"
+    "<li>Ein <b>EAGLE-Standardskript</b> ist eine Datei, die direkt "
+    "mit dem <tt>script</tt>-Befehl ausgeführt werden kann. Objekte werden "
+    "<b>exakt</b> wie im Quelldesign positioniert und verbunden, so daß "
+    "Probleme beim Verwenden des Skripts in nicht-leeren Designs auftreten "
+    "können.</li></ol><hr>"
+    "Das zu exportierende Design sollte folgende Eigenschaften haben:<ol>"
+    "<li>Sowohl Schaltplan <b>als auch</b> Platine müssen mit aktiver "
+    "Forward&Back-Annotation vorhanden sein.</li>"
+    "<li>Die Positionen <b>aller</b> Schaltplanpins müssen sich unterscheiden."
+    " Ist dies nicht der Fall, erscheint eine Warnung, die problematischen "
+    "Pins werden in der Ebene <tt>ExportErrors</tt> markiert, und das "
+    "Programm bricht ab.</li>"
+    "<li>Unter Linux oder auf einem Macintosh dürfen die Namen aller "
+    "verwendeten Bibliotheken nur <b>Kleinbuchstaben</b> enthalten.</li></ol>"
+    "<hr>"
+    "Folgende Objekte werden <b>nicht</b> unterstützt:<ol>"
+    "<li>Bibliotheks<b>inhalte</b> werden nicht exportiert. Das Programm "
+    "verläßt sich darauf, daß dem Zieldesign alle nötigen Bibliotheken (in "
+    "der jeweils richtigen Version) zur Verfügung stehen. Ist dies nicht der "
+    "Fall, schlägt der spätere Import fehl.</li>"
+    "<li>Enthält eine Komponente <b>mehr als einen</b> ge\"smash\"ten Text "
+    "<tt>&gt;NAME</tt>, so wird nur einer davon korrekt plaziert (die anderen "
+    "verbleiben an ihren Originalpositionen). Gleiches gilt für andere "
+    "ge\"smash\"te Platzhaltertexte. In Verbindung mit den Bibliotheken des "
+    "AEI werden alle Dokumentationstexte korrekt plaziert, die Position im "
+    "Platinendruck kann jedoch abweichen.</li>"
+    "<li>Ge\"smash\"te Texte, deren Eigenschaften (z.B. Ebene, Größe,...) "
+    "<b>nach dem Auflösen</b> verändert wurden, behalten meistens ihre "
+    "Originaleigenschaften. Unter bestimmten Umständen kann der Text in "
+    "seiner zugehörigen Spiegelebene auftauchen (z.B. kann ein <tt>tnames</tt>"
+    "-Text in der Ebene <tt>bnames</tt> erscheinen).</li></ol>"
+    "<hr><b>Hinweise:</b><ol>"
+    "<li>Zur Erzeugung einfach wiederverwendbarer <b>Schaltungsblöcke</b> "
+    "können Sie Ihre Exportskripte im Ordner <tt>autoscripts</tt> speichern, "
+    "der sich parallel zum ULP-Verzeichnis befinden sollte. Ist dieser "
+    "spezielle Ordner vorhanden, wird er vom Importprogramm automatisch "
+    "unterstützt.</li>"
+    "<li>Wenn Sie nichts exportieren, sondern nur die Pinfehlermarkierungen "
+    "voriger Aufrufe löschen möchten, verwenden Sie <tt>run export "
+    "removeerrors</tt>.</li>"
+    "<li>Zur korrekten Programmausführung wird die Datei <tt>awtools.inc</tt> "
+    "benötigt, für den Import von \"pse\"-Skripten <tt>import.ulp</tt>.</li>"
+    "</ol>"
+
+#include "awtools.inc"
+
+//Global declarations and constants
+
+enum {winBoard,winSchematic};     //Two types of supported EAGLE windows
+
+string StyleNames[]={"Continuous","LongDash","ShortDash","DashDot"};
+string CapNames[]={"Flat","Round"};
+string FontNames[]={"Vector","Proportional","Fixed"};
+
+//Global declarations for dialog box parameters
+
+enum {expImportable=0,expScript=1};     //Two types of export scripts
+int ExportType=expImportable;           //The current export script type
+int IncludeClasses=1;                   //Class inclusion for EAGLE scripts
+int IncludeLayers=1;                    //Layer inclusion for EAGLE scripts
+int EditScript=0;                       //Script editing by user
+
+//Functions for layer management
+
+int IsLayerUsed(int Window,int Layer) {
+  //Returns 1 if the LAYER is already in use in the WINDOW (0 otherwise).
+  //WINDOW may be one of the winXXX constants
+  if (Window==winBoard) {
+    if (!project.board)
+      return 0;
+    project.board(B)
+      B.layers(L)
+        //By some reason, "L.used" is not supported in Linux EAGLE 4.03
+        if ((L.number==Layer) /* && (L.used) */ )
+          return 1;
+    }
+  else if (Window==winSchematic) {
+    if (!project.schematic)
+      return 0;
+    project.schematic(S)
+      S.layers(L)
+        //By some reason, "L.used" is not supported in Linux EAGLE 4.03
+        if ((L.number==Layer) /* && (L.used) */ )
+          return 1;
+    }
+  return 0;
+  }
+
+int GetLayerNr(int Window,string Name) {
+  //Returns the number of the layer NAME in use in the WINDOW. If no such
+  //layer exists, returns 0. WINDOW may be one of the winXXX constants
+  if (Window==winBoard) {
+    if (!project.board)
+      return 0;
+    project.board(B)
+      B.layers(L)
+        if (strupr(L.name)==strupr(Name))
+          return L.number;
+    }
+  else if (Window==winSchematic) {
+    if (!project.schematic)
+      return 0;
+    project.schematic(S)
+      S.layers(L)
+        if (strupr(L.name)==strupr(Name))
+          return L.number;
+    }
+  return 0;
+  }
+
+int GetNewLayerNr(int Window) {
+  //Returns the number of the first free and unused layer in the WINDOW. If no
+  //free layer could be found, returns 0. WINDOW may be one of the winXXX
+  //constants
+  int Nr;
+  for (Nr=LAYER_USER;Nr<255;Nr++)
+    if (!IsLayerUsed(Window,Nr))
+      return Nr;
+  return 0;
+  }
+
+int CreateLayer(int Window,string Name) {
+  //Returns the number of the layer NAME in use in the WINDOW. If the layer
+  //doesn't exist yet, the number of the first freely available layer is
+  //returned. If no unused layer could be found, returns 0. WINDOW may be one
+  //of the winXXX constants
+  int Nr;
+  //If the layer already exists, return its number
+  Nr=GetLayerNr(Window,Name);
+  if (Nr>0)
+    return Nr;
+  //Otherwise, create it
+  return GetNewLayerNr(Window);
+  }
+
+int IsLayerVisible(int Window,int Layer) {
+  //Returns 1 if the LAYER is visible in the WINDOW (0 otherwise).
+  //WINDOW may be one of the winXXX constants
+  if (Window==winBoard) {
+    if (!project.board)
+      return 0;
+    project.board(B)
+      B.layers(L)
+        if ((L.number==Layer) && (L.visible!=0))
+          return 1;
+    }
+  else if (Window==winSchematic) {
+    if (!project.schematic)
+      return 0;
+    project.schematic(S)
+      S.layers(L)
+        if ((L.number==Layer) && (L.visible!=0))
+          return 1;
+    }
+  return 0;
+  }
+
+//Functions for writing into the exit command line
+
+string GetXY(int x,int y) {
+  //Returns the (bracketed) point string with the coordinates (X,Y). If the
+  //current export type is set to "PSE" format,
+  string Result;
+  if (ExportType==expImportable)
+    sprintf(Result,"(<XX@%s> <YY@%s>)",AWMic(x),AWMic(y));
+  else
+    sprintf(Result,"(%s %s)",AWMic(x),AWMic(y));
+  return Result;
+  }
+
+//Functions for error mark management in the schematic
+
+string ErrorLayerName="ExportErrors";
+int ErrorMinX,ErrorMaxX,ErrorMinY,ErrorMaxY;
+
+int CreateErrorLayer() {
+  //Returns the number of the error mark layer of the current schematic. If
+  //layer doesn't exist yet, the number of the first freely available layer is
+  //returned. If no unused layer could be found, returns 0
+  int Nr;
+  //Previous ULP versions called this layer SELECTIONERRORS, so first look for
+  //this name for compatibility
+  Nr=GetLayerNr(winSchematic,"SelectionErrors");
+  if (Nr)
+    return Nr;
+  else
+    return CreateLayer(winSchematic,ErrorLayerName);
+  }
+
+void RemoveErrorMarks() {
+  //Checks, wether the error layer contains error marks. If this is the case
+  //and ASKUSER<>0, asks the user whether these marks should be removed. If
+  //yes, returns 1 and sets the exit command string accordingly (otherwise
+  //returns 0). If the user shall not be asked, DEFAULTREMOVE defines whether
+  //the program should remove the marks be default or not
+  int Layer;
+  //Only do something worthwhile if a schematics with an error layer exists
+  Layer=GetLayerNr(winSchematic,ErrorLayerName);
+  if (!Layer)
+    Layer=GetLayerNr(winSchematic,"SelectionErrors");
+  if (Layer) {
+    //Error layer exists. Therefore, reset the surrounding error rectangle
+    ErrorMinX=INT_MAX;
+    ErrorMaxX=INT_MIN;
+    ErrorMinY=INT_MAX;
+    ErrorMaxY=INT_MIN;
+    //Create the beginning of the error mark removal exit command
+    AWExitCommand+="EDIT .sch;\n"+
+      "SET Used_Layers All;\n"+
+      "LAYER "+AWIntToStr(Layer)+";\n"+
+      "DISPLAY None "+AWIntToStr(Layer)+";\n";
+    //Go through all sheets and write the removal string for all objects in
+    //the error layer
+    project.schematic(S)
+      S.sheets(SH)
+        AWExitCommand+="EDIT .s"+AWIntToStr(SH.number)+";\n"+
+          "GROUP All;\n"+
+          "DELETE (>0 0);\n";
+    //By some reason, EAGLE can't cope with the syntax "LAYER -Layername",
+    //but wants to have "LAYER -Layernumber". Therefore, format the layer
+    //number into the commands
+    AWExitCommand+="LAYER Symbols;\n"+
+      "DISPLAY None;\n"+
+      "DISPLAY Nets Busses Symbols Names Values;\n"+
+      "DISPLAY -Pins;\n"+
+      "LAYER ?? -"+AWIntToStr(Layer)+";\n";
+    }
+  //If ONLY error removal is desired, do that and don't start this ULP again
+  if (AWParameterFound("RemoveErrors",1))
+    exit(AWExitCommand);
+  //If exporting is desired, first remove the current errors and then start
+  //the ULP Pagain WITHOUT error removal
+  else if (!AWParameterFound("NoErrorRemove",0))
+    exit(AWExitCommand+"RUN '"+argv[0]+"' NoErrorRemove");
+  //If no error layer is found, just return to the main program
+  else
+    return;
+  }
+
+void SetErrorPoint(int x,int y) {
+  //Includes the point (X,Y) in the current error mark surrounding rectangle
+  if (x<ErrorMinX)
+    ErrorMinX=x;
+  if (x>ErrorMaxX)
+    ErrorMaxX=x;
+  if (y<ErrorMinY)
+    ErrorMinY=y;
+  if (y>ErrorMaxY)
+    ErrorMaxY=y;
+  }
+
+void ZoomErrors() {
+  string Text;
+  if ((ErrorMinX>ErrorMaxX) || (ErrorMinY>ErrorMaxY))
+    return;
+  sprintf(Text,"WINDOW (%s %s) (%s %s);\n",AWMic(ErrorMinX-20000),
+    AWMic(ErrorMinY-20000),AWMic(ErrorMaxX+20000),AWMic(ErrorMaxY+20000));
+  AWExitCommand+=Text;
+  }
+
+//Functions for management of overlapping pins in the schematic
+
+int PinX[],PinY[];     //(X,Y) coordinates of ALL pin locations
+int PinCount[];        //Number of pins at this location
+int PinSheet[];        //Sheet number of this pin location
+int PinNr;             //Total number of pin locations
+
+int PinIndex(int x,int y,int Sheet) {
+  //Returns the index of the pin with the position (X,Y) in the pin list, if
+  //it is already available there (-1 otherwise)
+  int Nr;
+  for (Nr=0;Nr<PinNr;Nr++)
+    if ((Sheet==PinSheet[Nr]) && (x==PinX[Nr]) && (y==PinY[Nr]))
+      return Nr;
+  return -1;
+  }
+
+int AddPin(int x,int y,int Sheet) {
+  //Adds the pin with the position (X,Y) to the pin list. Returns 1 if the pin
+  //already exists in the list (0 otherwise)
+  int Index;
+  //Check, wether the pin is already available
+  Index=PinIndex(x,y,Sheet);
+  if (Index==-1) {
+    //It is not. Therefore, add it to the list
+    PinX[PinNr]=x;
+    PinY[PinNr]=y;
+    PinCount[PinNr]=1;
+    PinSheet[PinNr]=Sheet;
+    PinNr++;
+    return 0;
+    }
+  else {
+    //It is. So just increment the pin position count
+    PinCount[Index]++;
+    return 1;
+    }
+  }
+
+int MarkPinOverlap() {
+  //Checks, whether some pins in the schematic share the same location, and
+  //therefore nets with zero length are available. Return values: 0, if there
+  //are NO overlapping pins (everything is OK). 1, if pins overlap, but the
+  //export error layer could not be created (should not happen). 2, if pins
+  //overlap, and the exit command contains the script to show them
+  string PaletteName[]={"Black","White","Colored"};
+  int Nr,Doubles,Layer,Mark,OldPalette,FirstErrorSheet=0;
+  string Text;
+  //Exit, if no schematics could be found
+  if (!project.schematic)
+    return 0;
+  //Create the complete pin position list
+  PinNr=0;
+  Doubles=0;
+  project.schematic(S)
+    S.sheets(SH)
+      SH.nets(N)
+        N.segments(SE)
+          SE.pinrefs(PR)
+            if (AddPin(PR.pin.x,PR.pin.y,SH.number))
+              Doubles++;
+  //Exit, if no double pins (and therefore nets with zero length) were found
+  if ((PinNr==0) || (Doubles==0))
+    return 0;
+  //Get the layer number of the "ExportErrors" layer. Exit, if no unused layer
+  //is available
+  Layer=CreateErrorLayer();
+  if (Layer<0)
+    return 1;
+  //Duplicate pins ARE available and must be marked. Therefore, create the
+  //EXPORTERRORS layer and set the mark colors accordingly, so that they are
+  //properly visible with ALL palettes
+  OldPalette=palette(-1);
+  sprintf(Text,"EDIT .sch;\n"+
+    "SET Used_Layers All;\n"+
+    "LAYER %d %s;\n"+
+    "SET COLOR_LAYER %d 56;\n"+
+    "SET Fill_Layer %d 9;\n"+
+    "SET Palette Black;\n"+
+    "SET Palette 56 0xFFFFFF00;\n"+
+    "SET Palette White;\n"+
+    "SET Palette 56 0xFF00FFFF;\n"+
+    "SET Palette Colored;\n"+
+    "SET Palette 56 0xFFFFFF00;\n"+
+    "SET Palette %s;\n"+
+    "GRID Mic;\n"+
+    "LAYER %d;\n",Layer,ErrorLayerName,Layer,Layer,PaletteName[OldPalette],
+      Layer);
+  AWExitCommand+=Text;
+  //Mark all double pins with circles in layer ExportErrors, zoom the sheet to
+  //display these errors nicely and memorise the first sheet containing any
+  //errors
+  project.schematic(S)
+    S.sheets(SH) {
+      ErrorMinX=INT_MAX;
+      ErrorMaxX=INT_MIN;
+      ErrorMinY=INT_MAX;
+      ErrorMaxY=INT_MIN;
+      AWExitCommand+="EDIT .s"+AWIntToStr(SH.number)+";\n";
+      for (Nr=0;Nr<PinNr;Nr++)
+        if ((PinCount[Nr]>1) && (PinSheet[Nr]==SH.number)) {
+          if (!FirstErrorSheet)
+            FirstErrorSheet=SH.number;
+          AWExitCommand+="CIRCLE 0 "+GetXY(PinX[Nr],PinY[Nr])+" "+
+            GetXY(PinX[Nr]+12700,PinY[Nr])+";\n";
+          SetErrorPoint(PinX[Nr],PinY[Nr]);
+          }
+      ZoomErrors();
+      }
+  //Show the first erraneous sheet
+  AWExitCommand+="GRID Last;\n"+
+    "DISPLAY None;\n"+
+    "DISPLAY Nets Busses Symbols "+ErrorLayerName+";\n"+
+    "DISPLAY -Names -Values;\n"+
+    "EDIT .s"+AWIntToStr(FirstErrorSheet)+";\n";
+  //Complain with a message box
+  AWError("There are pins sharing the same location.<br><b>Overlapping pins"+
+    "</b> are not supported. Before<br>exporting, you should separate them "+
+    "with<br>visible nets (of length>0).<br><br>The "+AWIntToStr(Doubles)+
+    " offending pin(s) will be marked in the<br>layer '"+ErrorLayerName+"'.",
+    "Das Design enthält Pins mit identischer Position.<br><b>Überlappende "+
+    "Pins</b> werden nicht unterstützt. Vor<br>dem Export sollten Sie diese "+
+    "mit sichtbaren Netzen<br>(der Länge>0) trennen.<br><br>Die "+
+    AWIntToStr(Doubles)+" problematischen Pins werden in der Ebene<br>\""+
+    ErrorLayerName+"\" markiert.");
+  return 2;
+  }
+
+//Functions for writing general objects into the export script
+
+string GetPart(string PartName) {
+  //Returns the PARTNAME, either in PSE style (automatic renumbering possible)
+  //or "normal" (as it is)
+  if (ExportType==expImportable)
+    return "<PP@"+PartName+">";
+  else
+    return PartName;
+  }
+
+string GetNet(string NetName) {
+  //Returns the NETNAME, either in PSE style (automatic renumbering possible)
+  //or "normal" (as it is)
+  if (ExportType==expImportable)
+    return "<NN@"+NetName+">";
+  else
+    return NetName;
+  }
+
+string GetOrientation(real Angle,int Mirror,int Spin) {
+  //Returns the orientation string necessary to define an object with ANGLE
+  //degrees rotation that is probably MIRRORed or SPINned
+  string Text;
+  sprintf(Text,"R%s",AWRealToStr(Angle));
+  if (Mirror)
+    Text="M"+Text;
+  if (Spin)
+    Text="S"+Text;
+  return Text;
+  }
+
+void WriteArc(UL_ARC A,string ArcName,int Style) {
+  //Writes the arc A with the ARCNAME and the STYLE into the exit command
+  //line. If no name is given, the arc is not treated as a signal
+  string Name,Text;
+  real ClickAngle;
+  sprintf(Text,"LAYER %d;\n",A.layer);
+  AWExitCommand+=Text;
+  sprintf(Text,"CHANGE CAP %s;\n",CapNames[A.cap]);
+  AWExitCommand+=Text;
+  Name="";
+  if (ArcName!="")
+    Name="'"+GetNet(ArcName)+"' ";
+  sprintf(Text,"ARC %s%s %s %s %s;\n",Name,AWMic(A.width),GetXY(A.x2,A.y2),
+    GetXY(2*A.xc-A.x2,2*A.yc-A.y2),GetXY(A.x1,A.y1));
+  AWExitCommand+=Text;
+  //By some reason, arcs are ALWAYS drawn with wire style "continuous", no
+  //matter which style is currently active. Therefore, the wire style must
+  //be changed AFTER drawing the arc. This is done by "clicking" slightly
+  //off the first arc point (in the hope that there is no other object nearer
+  // this "off-point" than the arc itself
+  if ((A.angle1+1)<A.angle2)
+    ClickAngle=A.angle1+1;
+  else
+    ClickAngle=A.angle1+0.1;
+  ClickAngle=ClickAngle*PI/180;
+  sprintf(Text,"CHANGE STYLE %s %s;\n",StyleNames[Style],
+    GetXY(A.xc+int(A.radius*cos(ClickAngle)),A.yc+int(A.radius*sin(ClickAngle))));
+  AWExitCommand+=Text;
+  }
+
+void WriteCircle(UL_CIRCLE C) {
+  //Writes the circle C into the exit command line
+  string Text;
+  sprintf(Text,"LAYER %d;\n",C.layer);
+  AWExitCommand+=Text;
+  sprintf(Text,"CIRCLE %s %s %s;\n",AWMic(C.width),GetXY(C.x,C.y),
+    GetXY(C.x+C.radius,C.y));
+  AWExitCommand+=Text;
+  }
+
+void WritePolygon(UL_POLYGON P,string PolygonName) {
+  //Writes the polygon P with the POLYGONNAME into the exit command line. If
+  //no name is given, the polygon is not treated as a signal
+  string Name,Text;
+  int Point;
+  //Write the parameters for all polygon types
+  sprintf(Text,"LAYER %d;\n",P.layer);
+  AWExitCommand+=Text;
+  if (P.pour==0)
+    AWExitCommand+="CHANGE POUR Solid;\n";
+  else if (P.pour==1)
+    AWExitCommand+="CHANGE POUR Hatch;\n";
+  sprintf(Text,"CHANGE SPACING %s;\n",AWMic(P.spacing));
+  AWExitCommand+=Text;
+  //If the polygon is named, write its additional parameters
+  Name="";
+  if (PolygonName!="") {
+    sprintf(Text,"CHANGE ISOLATE %s;\n",AWMic(P.isolate));
+    AWExitCommand+=Text;
+    if (P.orphans)
+      AWExitCommand+="CHANGE ORPHANS On;\n";
+    else
+      AWExitCommand+="CHANGE ORPHANS Off;\n";
+    if (P.thermals)
+      AWExitCommand+="CHANGE THERMALS On;\n";
+    else
+      AWExitCommand+="CHANGE THERMALS Off;\n";
+    sprintf(Text,"CHANGE RANK %d;\n",P.rank);
+    AWExitCommand+=Text;
+    Name="'"+GetNet(PolygonName)+"' ";
+    }
+  //Write the "real" polygon points. The first line contains the POLYGON
+  //command with its first point, all other lines the endpoint of the next
+  //polygon wire
+  Point=0;
+  P.wires(W) {
+    if (Point==0) {
+      sprintf(Text,"POLYGON %s%s %s",Name,AWMic(P.width),GetXY(W.x1,W.y1));
+      AWExitCommand+=Text;
+      }
+    sprintf(Text,"\n%s",GetXY(W.x2,W.y2));
+    AWExitCommand+=Text;
+    Point++;
+    }
+  AWExitCommand+=";\n";
+  }
+
+void WriteRectangle(UL_RECTANGLE R) {
+  //Writes the rectangle R into the exit command line
+  string Text;
+  sprintf(Text,"LAYER %d;\n",R.layer);
+  AWExitCommand+=Text;
+  sprintf(Text,"RECT R%s %s %s;\n",AWRealToStr(R.angle),GetXY(R.x1,R.y1),
+    GetXY(R.x2,R.y2));
+  AWExitCommand+=Text;
+  }
+
+void WriteText(UL_TEXT T) {
+  //Writes the text T into the exit command line
+  string Text;
+  //Set the standard text attributes
+  sprintf(Text,"LAYER %d;\n",T.layer);
+  AWExitCommand+=Text;
+  sprintf(Text,"CHANGE SIZE %s;\n",AWMic(T.size));
+  AWExitCommand+=Text;
+  sprintf(Text,"CHANGE RATIO %d;\n",T.ratio);
+  AWExitCommand+=Text;
+  sprintf(Text,"CHANGE FONT %s;\n",FontNames[T.font]);
+  AWExitCommand+=Text;
+  //Write the text itself
+  sprintf(Text,"TEXT '%s' %s %s;\n",AWText2Script(T.value,0,0),
+    GetOrientation(T.angle,T.mirror,T.spin),GetXY(T.x,T.y));
+  AWExitCommand+=Text;
+  }
+
+void WriteWire(UL_WIRE W,string WireName) {
+  //Writes the wire W with the WIRENAME into the exit command line. If
+  //no name is given, the wire is not treated as a signal
+  string Name,Text;
+  if (W.arc) {
+    WriteArc(W.arc,WireName,W.style);
+    return;
+    }
+  sprintf(Text,"LAYER %d;\n",W.layer);
+  AWExitCommand+=Text;
+  sprintf(Text,"CHANGE STYLE %s;\n",StyleNames[W.style]);
+  AWExitCommand+=Text;
+  Name="";
+  if (WireName!="")
+    Name="'"+GetNet(WireName)+"' ";
+  sprintf(Text,"WIRE %s%s %s %s;\n",Name,AWMic(W.width),GetXY(W.x1,W.y1),
+    GetXY(W.x2,W.y2));
+  AWExitCommand+=Text;
+  }
+
+void WriteNetWire(UL_WIRE W,string NetName) {
+  //Writes the net W with the NETNAME into the exit command line. If
+  //no name is given, the net is not drawn
+  string Name,Text;
+  if (NetName=="")
+    return;
+  if (W.arc) {
+    WriteArc(W.arc,NetName,W.style);
+    return;
+    }
+  sprintf(Text,"CHANGE STYLE %s;\n",StyleNames[W.style]);
+  AWExitCommand+=Text;
+  Name="'"+GetNet(NetName)+"'";
+  sprintf(Text,"NET %s %s %s;\n",Name,GetXY(W.x1,W.y1),
+    GetXY(W.x2,W.y2));
+  AWExitCommand+=Text;
+  }
+
+void WriteBusWire(UL_WIRE W,string BusName) {
+  //Writes the bus W with the BUSNAME into the exit command line. If
+  //no name is given, the bus is not drawn
+  string Name,Text;
+  if (BusName=="")
+    return;
+  if (W.arc) {
+    WriteArc(W.arc,BusName,W.style);
+    return;
+    }
+  sprintf(Text,"CHANGE STYLE %s;\n",StyleNames[W.style]);
+  AWExitCommand+=Text;
+  Name="'"+GetNet(BusName)+"'";
+  sprintf(Text,"Bus %s %s %s;\n",Name,GetXY(W.x1,W.y1),
+    GetXY(W.x2,W.y2));
+  AWExitCommand+=Text;
+  }
+
+void WriteFrame(UL_FRAME F) {
+  //Writes the frame F into the exit command line
+  string Text;
+  sprintf(Text,"Layer %d;\n"+
+    "FRAME %d %d ",F.layer,F.columns,F.rows);
+  AWExitCommand+=Text;
+  if (!F.border)
+    AWExitCommand+="None ";
+  if (F.border & FRAME_BORDER_BOTTOM)
+    AWExitCommand+="Bottom ";
+  if (F.border & FRAME_BORDER_RIGHT)
+    AWExitCommand+="Right ";
+  if (F.border & FRAME_BORDER_TOP)
+    AWExitCommand+="Top ";
+  if (F.border & FRAME_BORDER_LEFT)
+    AWExitCommand+="Left ";
+  AWExitCommand+=GetXY(F.x1,F.y1)+" "+GetXY(F.x2,F.y2)+";\n";
+  }
+
+void WriteLayer(UL_LAYER L) {
+  //Writes the definition of the layer L into the exit command line
+  string Text;
+  //By some reason, "L.used" is not supported in Linux EAGLE 4.03
+  /* if (L.used) { */
+    sprintf(Text,"LAYER %d %s;\n",L.number,L.name);
+    AWExitCommand+=Text;
+  /* } */
+  }
+
+void WriteClass(UL_CLASS C) {
+  //Writes the definition of the class C into the exit command line
+  string Text;
+  if (C.name!="") {
+    sprintf(Text,"CLASS %d %s %s %s %s;\n",C.number,C.name,
+      AWMic(C.width),AWMic(C.clearance),AWMic(C.drill));
+    AWExitCommand+=Text;
+    }
+  }
+
+//Functions for writing special schematics objects into the export script
+
+string GetSheet(int Sheet) {
+  //Returns the edit string for the SHEET, either in PSE style (automatic
+  //renumbering possible) or "normal" (as it is)
+  string Text;
+  if (ExportType==expImportable)
+    sprintf(Text,"<SS@%d>",Sheet);
+  else
+    sprintf(Text,"%d",Sheet);
+  return Text;
+  }
+
+void WriteLabel(UL_LABEL L,int x,int y) {
+  //Writes the label L into the exit command line
+  AWExitCommand+="CHANGE Size "+AWRealToStr(real(L.text.size)/10)+";\n"+
+    "CHANGE Ratio "+AWIntToStr(L.text.ratio)+";\n"+
+    "CHANGE Font "+FontNames[L.text.font]+";\n"+
+    "LABEL";
+  if (L.xref)
+    AWExitCommand+=" XRef";
+  AWExitCommand+="\n"+
+    "LAYER "+AWIntToStr(L.layer)+"\n"+
+    GetOrientation(L.angle,L.mirror,L.spin)+" "+GetXY(x,y)+" "+
+    GetXY(L.x,L.y)+";\n";
+  }
+
+//Inserting parts is not so trivial, because depending on whether a part has
+//already been inserted, its additional gates cannot be inserted with the ADD
+//command - INVOKE must be used in that case. Therefore, a list of already
+//inserted parts must be kept
+
+string PartsInserted[];      //Names of the parts already inserted
+int NrPartsInserted=0;       //Number of parts already inserted
+
+void MoveSmashedInstanceText(UL_PART P,UL_INSTANCE I,string Name,string Value,int Layer) {
+  string Text;
+  if (!I.smashed[Name])
+    return;
+  I.texts(T)
+    if ((T.value==Value) && (T.layer==Layer)) {
+      sprintf(Text,"MOVE %s%s>%s %s;\n",GetPart(P.name),I.gate.name,Name,
+        GetXY(T.x,T.y));
+      AWExitCommand+=Text;
+      sprintf(Text,"ROTATE =%s '%s%s>%s';\n",GetOrientation(T.angle,T.mirror,
+        T.spin),GetPart(P.name),I.gate.name,Name);
+      AWExitCommand+=Text;
+      }
+  }
+
+void WriteAttribute(UL_ATTRIBUTE A,string PartElement,string Gate) {
+  string Text;
+  //If the attribute's value is its default, and it is not displayed, nothing
+  //needs to be done
+  if ((!A.display) && (A.value==A.defaultvalue))
+    return;
+  if (A.value!=A.defaultvalue) {
+    if (!A.display)
+      AWExitCommand+="CHANGE Display Off;\n";
+    else if (A.display==ATTRIBUTE_DISPLAY_FLAG_VALUE)
+      AWExitCommand+="CHANGE Display Value;\n";
+    else if (A.display==ATTRIBUTE_DISPLAY_FLAG_NAME)
+      AWExitCommand+="CHANGE Display Name;\n";
+    else
+      AWExitCommand+="CHANGE Display Both;\n";
+    if (A.display) {
+      //Set the text attributes
+      sprintf(Text,"CHANGE SIZE %s;\n"+"CHANGE RATIO %d;\n"+
+        "CHANGE FONT %s;\n",AWMic(A.text.size),A.text.ratio,
+        FontNames[A.text.font]);
+      AWExitCommand+=Text;
+      }
+    AWExitCommand+="ATTRIBUTE\n";
+    if (A.display)
+      AWExitCommand+="LAYER "+AWIntToStr(A.text.layer)+"\n";
+    sprintf(Text,"%s%s %s '%s';",GetPart(PartElement),Gate,A.name,
+      AWText2Script(A.value,0,0));
+    AWExitCommand+=Text;
+    }
+  if (A.display) {
+//    sprintf(Text," %s %s",GetOrientation(A.text.angle,A.text.mirror,
+//      A.text.spin),GetXY(A.text.x,A.text.y));
+    sprintf(Text,"MOVE %s%s>%s %s;\n",GetPart(PartElement),Gate,A.name,
+      GetXY(A.text.x,A.text.y));
+    AWExitCommand+=Text;
+    sprintf(Text,"ROTATE =%s '%s%s>%s'",GetOrientation(A.text.angle,
+      A.text.mirror,A.text.spin),GetPart(PartElement),Gate,A.name);
+    AWExitCommand+=Text;
+    }
+  AWExitCommand+=";\n";
+/*  if (A.display) {
+    sprintf(Text,"DISPLAY None %d;\n"+"Layer %d %s;\n",A.text.layer,
+      A.text.layer,GetXY(A.text.x,A.text.y));
+    AWExitCommand+=Text;
+    }*/
+  }
+
+void WritePart(UL_PART P) {
+  //Writes the part P into the exit command line
+  string Text;
+  P.instances(I) {
+    //Check, wether a part with this name already exists
+    if (lookup(PartsInserted,P.name,0)=="") {
+      //No, it doesn't. Therefore, ADD the gate normally and include it in
+      //the list of already inserted parts. BEWARE: The Windows version of
+      //EAGLE sometimes returns the library name in UPPERCASE, though that's
+      //not the case. This makes problems when using a PSE script created
+      //under Windows together with the Linux version ("file not found").
+      //Therefore, convert all library names to lowercase. Libraries with
+      //ANY uppercase character are therefore NOT supported!
+      sprintf(Text,"ADD %s@%s '%s' '%s' %s %s;\n",
+        P.device.name,strlwr(P.device.library),GetPart(P.name),I.gate.name,
+        GetOrientation(I.angle,I.mirror,0),GetXY(I.x,I.y));
+      AWExitCommand+=Text;
+      PartsInserted[NrPartsInserted]=P.name;
+      NrPartsInserted++;
+      //If it's a new part, its value must be set if it differs from the
+      //device name
+      if (P.value!=P.device.name) {
+        sprintf(Text,"VALUE %s '%s';\n",GetPart(P.name),AWText2Script(P.value,
+          0,0));
+        AWExitCommand+=Text;
+        }
+      }
+    else {
+      //Yes, the part does already exist. Therefore, the new gate must be
+      //INVOKED
+      sprintf(Text,"INVOKE %s %s %s %s;\n",GetPart(P.name),I.gate.name,
+        GetOrientation(I.angle,I.mirror,0),GetXY(I.x,I.y));
+      AWExitCommand+=Text;
+      }
+    I.attributes(A)
+      WriteAttribute(A,P.name,I.gate.name);
+    if (I.smashed)
+      AWExitCommand+="SMASH "+GetPart(P.name)+I.gate.name+";\n";
+    MoveSmashedInstanceText(P,I,"NAME",I.name,LAYER_NAMES);
+    MoveSmashedInstanceText(P,I,"VALUE",I.value,LAYER_VALUES);
+    MoveSmashedInstanceText(P,I,"PART",P.name,LAYER_NAMES);
+    MoveSmashedInstanceText(P,I,"GATE",I.gate.name,LAYER_NAMES);
+    }
+  }
+
+void WriteNet(UL_NET N) {
+  //Writes the net N into the exit command line
+  int x,y;
+  string Text;
+  sprintf(Text,"CHANGE CLASS %d;\n",N.class.number);
+  AWExitCommand+=Text;
+  //Go through all segments of the net separately
+  N.segments(S) {
+    //Draw all wires of the segment separately
+    S.wires(W) {
+      WriteNetWire(W,N.name);
+      x=W.x1;
+      y=W.y1;
+      }
+    //Put in the junctions afterwards
+    S.junctions(J) {
+      sprintf(Text,"JUNCTION %s;\n",GetXY(J.x,J.y));
+      AWExitCommand+=Text;
+      x=J.x;
+      y=J.y;
+      }
+    //At last, label the net appropriately. Unfortunately, the label command
+    //needs a "click" point so that EAGLE knows which net to label. Therefore,
+    //the last coordinate of previously drawn wires or junctions has been
+    //memorized in (X,Y)
+    S.labels(L)
+      WriteLabel(L,x,y);
+    }
+  }
+
+void WriteBus(UL_BUS B) {
+  //Writes the bus B into the exit command line
+  int x,y;
+  string Text;
+  //Go through all segments of the bus separately
+  B.segments(S) {
+    //Draw all wires of the segment separately
+    S.wires(W) {
+      WriteBusWire(W,B.name);
+      x=W.x1;
+      y=W.y1;
+      }
+    //Label the bus appropriately. Unfortunately, the label command needs a
+    //"click" point so that EAGLE knows which bus to label. Therefore, the
+    //last coordinate of previously drawn wires or junctions has been
+    //memorized in (X,Y)
+    S.labels(L)
+      WriteLabel(L,x,y);
+    }
+  }
+
+//Functions for writing special board objects into the export script
+
+void WriteVia(UL_VIA V,string SignalName) {
+  //Writes the via V into the exit command line
+  string Signal,Shape,Text;
+  sprintf(Text,"CHANGE DRILL %s;\n",AWMic(V.drill));
+  AWExitCommand+=Text;
+  Shape="";
+  if (V.shape[LAYER_VIAS]==VIA_SHAPE_SQUARE)
+    Shape="Square";
+  else if (V.shape[LAYER_VIAS]==VIA_SHAPE_ROUND)
+    Shape="Round";
+  else if (V.shape[LAYER_VIAS]==VIA_SHAPE_OCTAGON)
+    Shape="Octagon";
+  Signal="";
+  if (SignalName!="")
+    Signal="'"+GetNet(SignalName)+"' ";
+  sprintf(Text,"VIA %s%s %s %s;\n",Signal,AWMic(V.diameter[LAYER_VIAS]),
+    Shape,GetXY(V.x,V.y));
+  AWExitCommand+=Text;
+  }
+
+void WriteSignal(UL_SIGNAL S) {
+  //Writes the signal S into the exit command line
+  string Text;
+  sprintf(Text,"CHANGE CLASS %d;\n",S.class.number);
+  AWExitCommand+=Text;
+  //Create all signal wires except those on the layer UNROUTED (these were
+  //automatically created by the BOARD command
+  S.wires(W)
+    if (W.layer!=LAYER_UNROUTED)
+      WriteWire(W,S.name);
+  //Add the signal vias and polygons
+  S.vias(V)
+    WriteVia(V,S.name);
+  S.polygons(P)
+    WritePolygon(P,S.name);
+  }
+
+//Inserting elements is not so trivial, because depending on whether a part has
+//already been inserted into the schematics, it must be either MOVEd (if it
+//already exists) or ADDed (if it doesn't). Therefore, use the available list of
+//already inserted parts memorised from adding parts into the schematics
+
+void MoveSmashedText(UL_ELEMENT E,string Name,string Value,int Layer) {
+  string Text;
+  if (!E.smashed[Name])
+    return;
+  E.texts(T)
+    if ((T.value==Value) && (T.layer==Layer)) {
+      sprintf(Text,"MOVE %s>%s %s;\n",GetPart(E.name),Name,GetXY(T.x,T.y));
+      AWExitCommand+=Text;
+      sprintf(Text,"ROTATE =%s '%s>%s';\n",GetOrientation(T.angle,T.mirror,T.spin),
+        GetPart(E.name),Name);
+      AWExitCommand+=Text;
+      }
+  }
+
+void WriteElement(UL_ELEMENT E) {
+  //Writes the element E into the exit command line
+  string Text;
+  //Check, wether a part with this name has already been inserted in the
+  //schematics
+  if (lookup(PartsInserted,E.name,0)=="") {
+    //No, it hasn't. Therefore, ADD the element normally and include it in
+    //the list of already inserted parts. BEWARE: The Windows version of
+    //EAGLE sometimes returns the library name in UPPERCASE, though that's
+    //not the case. This creates problems when using a PSE script created
+    //under Windows together with the Linux version ("file not found").
+    //Therefore, convert all library names to lowercase. Libraries with
+    //ANY uppercase character are therefore NOT supported!
+    sprintf(Text,"ADD %s@%s '%s' %s %s;\n",E.package.name,
+      E.package.library,GetPart(E.name),GetOrientation(E.angle,E.mirror,E.spin),
+      GetXY(E.x,E.y));
+    AWExitCommand+=Text;
+    PartsInserted[NrPartsInserted]=E.name;
+    NrPartsInserted++;
+    //If it's a new part, its value must be set if it differs from the
+    //device name
+    if (E.value!=E.package.name) {
+      sprintf(Text,"VALUE %s '%s';\n",GetPart(E.name),AWText2Script(E.value,
+        0,0));
+      AWExitCommand+=Text;
+      }
+    }
+  else {
+    //Yes, the part does already exist. Therefore, the element must be MOVED
+    //around and perhaps even be rotated or mirrored.
+    sprintf(Text,"MOVE %s %s;\n",GetPart(E.name),GetXY(E.x,E.y));
+    AWExitCommand+=Text;
+    sprintf(Text,"ROTATE =%s '%s';\n",GetOrientation(E.angle,E.mirror,E.spin),
+      GetPart(E.name));
+    AWExitCommand+=Text;
+    }
+  if (E.smashed)
+    AWExitCommand+="SMASH "+GetPart(E.name)+";\n";
+  MoveSmashedText(E,"NAME",E.name,LAYER_TDOCU);
+  MoveSmashedText(E,"NAME",E.name,LAYER_BDOCU);
+  MoveSmashedText(E,"NAME",E.name,LAYER_TPLACE);
+  MoveSmashedText(E,"NAME",E.name,LAYER_BPLACE);
+  MoveSmashedText(E,"NAME",E.name,LAYER_TNAMES);
+  MoveSmashedText(E,"NAME",E.name,LAYER_BNAMES);
+  MoveSmashedText(E,"VALUE",E.value,LAYER_TVALUES);
+  MoveSmashedText(E,"VALUE",E.value,LAYER_BVALUES);
+  E.attributes(A)
+    WriteAttribute(A,E.name,"");
+  if (E.locked)
+    AWExitCommand+="LOCK "+GetPart(E.name)+";\n";
+  }
+
+void WriteHole(UL_HOLE H) {
+  //Writes the hole H into the exit command line
+  string Text;
+  sprintf(Text,"HOLE %s %s;\n",AWMic(H.drill),GetXY(H.x,H.y));
+  AWExitCommand+=Text;
+  }
+
+//Functions for creating special movable PSE design scripts
+
+string GetSCHAreaString(UL_SHEET SH) {
+  //Returns the area used in the schematics sheet SH in movable PSE format
+  string Result="";
+  if (ExportType==expImportable)
+    sprintf(Result,"<AREA@%s %s %s %s>\n",AWMic(SH.area.x1),
+      AWMic(SH.area.y1),AWMic(SH.area.x2),AWMic(SH.area.y2));
+  return Result;
+  }
+
+string GetBRDAreaString(UL_BOARD B) {
+  //Returns the area used in the board B in movable PSE format
+  string Result="";
+  if (ExportType==expImportable)
+    sprintf(Result,"<AREA@%s %s %s %s>\n",AWMic(B.area.x1),
+      AWMic(B.area.y1),AWMic(B.area.x2),AWMic(B.area.y2));
+  return Result;
+  }
+
+//The "main" export functions
+
+void ExportSchematic() {
+  //Exports the current schematics into the exit command
+  string Text;
+  //Exit, if no schematics are available
+  if (!project.schematic)
+    return;
+  project.schematic(S) {
+    //Switch to the schematic and set default behaviour
+    AWExitCommand+="EDIT .sch;\n"+
+             "SET Used_Layers All;\n"+
+             "GRID Mic Finest Off;\n"+
+             "DISPLAY All;\n"+
+             "SET WIRE_BEND 2;\n"+
+             "SET AUTO_JUNCTION Off;\n";
+    //Include class and layer definition, if desired
+    if ((IncludeClasses) || (ExportType==expImportable))
+      S.classes(C)
+       WriteClass(C);
+    if ((IncludeLayers) || (ExportType==expImportable))
+      S.layers(L)
+        WriteLayer(L);
+    //S.libraries(L);  No library support yet
+    //Go through all schematic sheets separately
+    S.sheets(SH) {
+      //Switch to the current sheet and write its dimensions
+      sprintf(Text,"\nEDIT .s%s;\n",GetSheet(SH.number));
+      AWExitCommand+=Text+
+               GetSCHAreaString(SH);
+      //Go through all objects of the current sheet
+      SH.frames(F)
+        WriteFrame(F);
+      SH.circles(C)
+        WriteCircle(C);
+      SH.polygons(P)
+        WritePolygon(P,"");
+      SH.rectangles(R)
+        WriteRectangle(R);
+      SH.texts(T)
+        WriteText(T);
+      SH.wires(W)
+        WriteWire(W,"");
+      SH.parts(P)
+        WritePart(P);
+      SH.nets(N)
+        WriteNet(N);
+      //When adding busses, switch the display of nets off. Otherwise, there
+      //could be problems with connections
+      AWExitCommand+="DISPLAY -Nets;\n";
+      SH.busses(B)
+        WriteBus(B);
+      AWExitCommand+="DISPLAY Nets;\n";
+      }
+    //Write finishing schematics commands
+    AWExitCommand+="DISPLAY -Pins;\n"+
+             "GRID Last;\n"+
+             "SET Auto_Junction On;\n"+
+             "DISPLAY All -Pins;\n"+
+             "WINDOW Fit;\n";
+    }
+  }
+
+void ExportBoard() {
+  //Exports the current board into the exit command
+  if (!project.board)
+    return;
+  //Exit, if no board is available
+  project.board(B) {
+    //Switch to the board and set default behaviour
+    AWExitCommand+="\nEDIT .brd;\n"+
+             GetBRDAreaString(B)+
+             "SET Used_Layers All;\n"+
+             "GRID Mic Finest Off;\n"+
+             "SET WIRE_BEND 2;\n";
+    //Include layer definition, if desired
+    if ((IncludeLayers) || (ExportType==expImportable))
+      B.layers(L)
+        WriteLayer(L);
+    //B.libraries(L);  No library support yet
+    //Go through all board objects separately
+    B.frames(F)
+      WriteFrame(F);
+    B.elements(E)
+      WriteElement(E);
+    B.signals(S)
+      WriteSignal(S);
+    B.circles(C)
+      WriteCircle(C);
+    B.polygons(P)
+      WritePolygon(P,"");
+    B.rectangles(R)
+      WriteRectangle(R);
+    B.texts(T)
+      WriteText(T);
+    B.wires(W)
+      WriteWire(W,"");
+    B.holes(H)
+      WriteHole(H);
+    //Write finishing board commands
+    AWExitCommand+="SET POLYGON_RATSNEST Off;\n"+
+             "RATSNEST;\n"+
+             "SET POLYGON_RATSNEST On;\n"+
+             "GRID Last;\n"+
+             "DISPLAY All;\n"+
+             "WINDOW Fit;\n";
+    }
+  }
+
+int ExportDialog() {
+  //Shows the main export dialog and returns 1, if this was closed with OK
+  //(0 otherwise)
+  int Result;
+  //Define and show the dialog box
+  Result=dlgDialog(AWLocalise("Export Design Script",
+      "Designskript exportieren")) {
+    dlgGroup(AWLocalise("Options","Optionen")) {
+      dlgRadioButton(AWLocalise("Create an importable 'pse' design script\n"+
+        "(This must be used together with the IMPORT program - parts and\n"+
+        "nets can be automatically renamed and moved)","Importierbares "+
+        "\"pse\"-Designskript erzeugen\n(Muß zusammen mit dem IMPORT-Programm"+
+        " verwendet werden - Bauteile\nund Netze können automatisch "+
+        "umbenannt und verschoben werden)"),ExportType);
+      dlgRadioButton(AWLocalise("Create a standard EAGLE script\n(All parts "+
+        "and nets are named and placed EXACTLY as in the\n current design)",
+        "EAGLE-Standardskript erzeugen\n(Alle Bauteile und Netze werden "+
+        "EXAKT wie im aktuellen Design\nbenannt und positioniert)"),
+        ExportType);
+      dlgHBoxLayout {
+        dlgSpacing(20);
+        dlgVBoxLayout {
+          dlgCheckBox(AWLocalise("Include class definitions\n(Overrides the "+
+            "classes in the destination design. Uncheck this\nonly if no "+
+            "special classes are used, or if class conflicts between\nsource "+
+            "and destination might occur)","Klassendefinitionen einbinden\n"+
+            "(Überschreibt die Klassen des Zieldesigns. Nur deaktivieren, "+
+            "wenn\nkeine speziellen Klassen eingesetzt werden, oder "+
+            "Klassenkonflikte\nzwischen Quelle und Ziel auftreten könnten)"),
+            IncludeClasses);
+          dlgCheckBox(AWLocalise("Include layer definitions\n(Overrides the "+
+            "layer names in the destination design. Uncheck\nthis only if no "+
+            "custom layers are used, or if layer conflicts\nbetween source "+
+            "and destination might occur)","Ebenendefinitionen einbinden\n"+
+            "(Überschreibt die Ebenennamen des Zieldesigns. Nur "+
+            "ausschalten,\nwenn keine eigenen Ebenen eingesetzt werden, "+
+            "oder\nEbenenkonflikte zwischen Quelle und Ziel auftreten "+
+            "könnten)"),IncludeLayers);
+          }
+        }
+      dlgCheckBox(AWLocalise("Edit script before creating the file","Skript "+
+        "vor dem Speichern bearbeiten"),EditScript);
+      }
+    dlgSpacing(6);
+    dlgHBoxLayout {
+      dlgStretch(0);
+      dlgPushButton("+OK")
+        dlgAccept(1);
+      dlgPushButton(AWLocalise("-Cancel","-Abbrechen"))
+        dlgReject(0);
+      }
+    };
+  return Result;
+  }
+
+int ShowScript() {
+  //Shows the command script in a dialog (if desired) and returns 1, if the
+  //script is to be executed (0 otherwise)
+  int Result;
+  Result=1;
+  if (EditScript) {
+    Result=dlgDialog(AWLocalise("Edit Design Script","Designskript "+
+        "bearbeiten")) {
+      dlgGridLayout {
+        dlgCell(0,0) {
+          dlgVBoxLayout {
+            dlgSpacing(350);
+            }
+          }
+        dlgCell(0,1) {
+          dlgVBoxLayout {
+            AWLabel("Only experienced EAGLE users should edit this script!",
+              "Nur erfahrene EAGLE-Benutzer sollten dieses Skript verändern!");
+            dlgTextEdit(AWExitCommand);
+            }
+          }
+        dlgCell(1,1) {
+          dlgSpacing(500);
+          }
+        }
+      dlgSpacing(dlgSpace);
+      dlgHBoxLayout {
+        dlgStretch(0);
+        dlgPushButton(AWLocalise("+Save","+Speichern"))
+          dlgAccept(1);
+        dlgPushButton(AWLocalise("-Cancel","-Abbrechen"))
+          dlgReject(0);
+        }
+      };
+    }
+  return Result;
+  }
+
+//MAIN PROGRAM
+
+string FileName,Filter;
+int Result;
+
+//Exit, if the program was not run from a schematic or board window with
+//working forward/backward annotation
+if (library) {
+  dlgMessageBox("This program cannot be run from within a library");
+  exit(0);
+  }
+if (!project.board) {
+  dlgMessageBox("This program cannot be run in a design without board");
+  exit(0);
+  }
+if (!project.schematic) {
+  dlgMessageBox("This program cannot be run in a design without schematics");
+  exit(0);
+  }
+//The automatic scripting must NOT contain movable points
+ExportType=expScript;
+//If error marks are present and the user wishes to remove them, do this
+RemoveErrorMarks();
+//If overlapping pins are present and the user wishes to mark these, do this
+//When no marking is desired, complain and exit
+Result=MarkPinOverlap();
+if (Result==2)
+  exit(AWExitCommand);
+else if (Result==1) {
+  AWError("Cannot export designs with<br>overlapping pins in the schematics.",
+    "Designs mit überlappenden Pins<br>können nicht exportiert werden.");
+  exit(0);
+  }
+//Some attribute-related functions are inconsistent as of EAGLE version 5.6.0
+//(depending on which editor window the ULP was started from, attribute's
+//default values are different). To prevent this, always run this ULP from
+//within the board editor (where these problems by some reason don't occur)
+if (schematic)
+  exit("EDIT .brd;\nRUN '"+argv[0]+"' NoErrorRemove;\n");
+//Here, the export can be done (no overlapping pins available). The default
+//export type from here on is PSE
+ExportType=expImportable;
+//Show the export dialog and exit on cancel
+if (!ExportDialog())
+  exit(0);
+
+//CheckLibraries();
+
+//Export the whole design into the exit command
+AWExitCommand+="SET Warning.PartHasNoUserDefinableValue 0;\n";
+ExportSchematic();
+ExportBoard();
+AWExitCommand+="SET Warning.PartHasNoUserDefinableValue 1;\n";
+//Show the resulting script, if desired. Exit on cancel
+if (!ShowScript())
+  exit(0);
+//The design is to be saved. So create the default filename
+project.board(B) {
+  if (ExportType==expImportable) {
+    FileName=filesetext(B.name,".pse");
+    Filter="*.pse";
+    }
+  else if (ExportType==expScript) {
+    FileName=filesetext(B.name,".scr");
+    Filter="*.scr";
+    }
+  }
+//Ask the user for the real filename. Exit on cancel
+FileName=dlgFileSave("Save Design Script",FileName,Filter);
+if (FileName=="")
+  exit(0);
+//Create the design script file
+output(FileName,"wt")
+  printf("%s",AWExitCommand);
+//That's it, folks!
